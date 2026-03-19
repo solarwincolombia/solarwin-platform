@@ -31,7 +31,8 @@ export default function LoginPage() {
       .eq("id", data.user.id)
       .single();
 
-    router.push(profile?.role === "installer" ? "/installer/dashboard" : "/broker/dashboard");
+    const role = profile && profile.role ? profile.role : "broker";
+    router.push(role === "installer" ? "/installer/dashboard" : "/broker/dashboard");
   }
 
   return (
