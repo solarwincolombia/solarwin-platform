@@ -16,23 +16,30 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
     const supabase = createClient();
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) {
-      setError("Correo o contraseña incorrectos");
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        setError("Correo o contraseña incorrectos");
+        setLoading(false);
+        return;
+      }
+
+      // Leer rol del perfil
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", data.user.id)
+        .single();
+
+      const role = profile?.role ?? "broker";
+      const dest = role === "installer" ? "/installer/dashboard" : "/broker/dashboard";
+      window.location.href = dest;
+    } catch {
+      setError("Ocurrió un error inesperado. Intenta de nuevo.");
       setLoading(false);
-      return;
     }
-
-    // Leer rol del perfil
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", data.user.id)
-      .single();
-
-    const role = profile && profile.role ? profile.role : "broker";
-    router.push(role === "installer" ? "/installer/dashboard" : "/broker/dashboard");
   }
 
   return (
