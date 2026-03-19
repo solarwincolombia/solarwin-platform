@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
   const params = useSearchParams();
   const defaultRole = params.get("role") === "installer" ? "installer" : "broker";
@@ -53,49 +53,57 @@ export default function RegisterPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#1A2A3A] flex items-center justify-center px-4 py-10">
-      <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-xl">
-        <div className="text-center mb-6">
-          <div className="text-3xl font-extrabold mb-1">
-            <span className="text-[#FFC107]">SOLAR</span>
-            <span className="text-[#1A2A3A]">WIN</span>
-          </div>
-          <p className="text-slate-500 text-sm">Crea tu cuenta de aliado</p>
+    <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-xl">
+      <div className="text-center mb-6">
+        <div className="text-3xl font-extrabold mb-1">
+          <span className="text-[#FFC107]">SOLAR</span>
+          <span className="text-[#1A2A3A]">WIN</span>
         </div>
-
-        {/* Role selector */}
-        <div className="flex gap-3 mb-6">
-          {(["broker", "installer"] as const).map(r => (
-            <button key={r} onClick={() => setRole(r)} type="button"
-              className={`flex-1 py-3 rounded-xl font-semibold text-sm border-2 transition ${
-                role === r ? "border-[#FFC107] bg-[#FFFBEB] text-[#1A2A3A]" : "border-slate-200 text-slate-500"
-              }`}>
-              {r === "broker" ? "🤝 Broker" : "🔧 Instalador"}
-            </button>
-          ))}
-        </div>
-
-        <form onSubmit={handleRegister} className="space-y-4">
-          {field("Nombre completo", "fullName", "text", "Juan Pérez")}
-          {field("Correo electrónico", "email", "email", "tu@correo.com")}
-          {field("Teléfono / WhatsApp", "phone", "tel", "+57 300 000 0000")}
-          {field("Ciudad", "city", "text", "Cartagena")}
-          {field(role === "broker" ? "Empresa (opcional)" : "Nombre de tu empresa instaladora", "companyName", "text")}
-          {field("Contraseña", "password", "password", "Mínimo 8 caracteres")}
-
-          {error && <p className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">{error}</p>}
-
-          <button type="submit" disabled={loading}
-            className="w-full bg-[#1A2A3A] text-white font-bold py-3 rounded-lg hover:bg-[#243447] transition disabled:opacity-60 mt-2">
-            {loading ? "Creando cuenta..." : "Crear cuenta →"}
-          </button>
-        </form>
-
-        <p className="text-center text-sm text-slate-500 mt-5">
-          ¿Ya tienes cuenta?{" "}
-          <Link href="/login" className="text-[#1A2A3A] font-semibold hover:underline">Ingresar</Link>
-        </p>
+        <p className="text-slate-500 text-sm">Crea tu cuenta de aliado</p>
       </div>
+
+      {/* Role selector */}
+      <div className="flex gap-3 mb-6">
+        {(["broker", "installer"] as const).map(r => (
+          <button key={r} onClick={() => setRole(r)} type="button"
+            className={`flex-1 py-3 rounded-xl font-semibold text-sm border-2 transition ${
+              role === r ? "border-[#FFC107] bg-[#FFFBEB] text-[#1A2A3A]" : "border-slate-200 text-slate-500"
+            }`}>
+            {r === "broker" ? "🤝 Broker" : "🔧 Instalador"}
+          </button>
+        ))}
+      </div>
+
+      <form onSubmit={handleRegister} className="space-y-4">
+        {field("Nombre completo", "fullName", "text", "Juan Pérez")}
+        {field("Correo electrónico", "email", "email", "tu@correo.com")}
+        {field("Teléfono / WhatsApp", "phone", "tel", "+57 300 000 0000")}
+        {field("Ciudad", "city", "text", "Cartagena")}
+        {field(role === "broker" ? "Empresa (opcional)" : "Nombre de tu empresa instaladora", "companyName", "text")}
+        {field("Contraseña", "password", "password", "Mínimo 8 caracteres")}
+
+        {error && <p className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">{error}</p>}
+
+        <button type="submit" disabled={loading}
+          className="w-full bg-[#1A2A3A] text-white font-bold py-3 rounded-lg hover:bg-[#243447] transition disabled:opacity-60 mt-2">
+          {loading ? "Creando cuenta..." : "Crear cuenta →"}
+        </button>
+      </form>
+
+      <p className="text-center text-sm text-slate-500 mt-5">
+        ¿Ya tienes cuenta?{" "}
+        <Link href="/login" className="text-[#1A2A3A] font-semibold hover:underline">Ingresar</Link>
+      </p>
+    </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <div className="min-h-screen bg-[#1A2A3A] flex items-center justify-center px-4 py-10">
+      <Suspense fallback={<div className="text-white">Cargando...</div>}>
+        <RegisterForm />
+      </Suspense>
     </div>
   );
 }
