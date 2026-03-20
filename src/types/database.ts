@@ -18,6 +18,9 @@ export interface Database {
           phone: string | null;
           city: string | null;
           company_name: string | null;
+          trade_name: string | null;
+          logo_url: string | null;
+          avatar_url: string | null;
           created_at: string;
           updated_at: string;
         };

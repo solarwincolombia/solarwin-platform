@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { href: "/installer/warranties", icon: "🛡️", label: "Garantías" },
   { href: "/installer/payments", icon: "💰", label: "Pagos" },
   { href: "/installer/equipment", icon: "📦", label: "Equipos" },
+  { href: "/installer/settings", icon: "⚙️", label: "Perfil y marca" },
 ];
 
 export default async function InstallerLayout({ children }: { children: React.ReactNode }) {

@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: "/broker/quoter", icon: "⚡", label: "Nueva Cotización" },
   { href: "/broker/commissions", icon: "💰", label: "Mis Comisiones" },
   { href: "/broker/resources", icon: "📁", label: "Materiales" },
+  { href: "/broker/settings", icon: "⚙️", label: "Mi perfil" },
 ];
 
 export default async function BrokerLayout({ children }: { children: React.ReactNode }) {

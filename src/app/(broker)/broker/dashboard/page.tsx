@@ -19,8 +19,17 @@ export default async function BrokerDashboard() {
   const [{ data: quotes }, { data: commissions }, { data: profile }] = await Promise.all([
     supabase.from("quotes").select("*").eq("broker_id", user!.id).order("created_at", { ascending: false }),
     supabase.from("commissions").select("*").eq("broker_id", user!.id),
-    supabase.from("profiles").select("full_name").eq("id", user!.id).single(),
+    (supabase as any).from("profiles").select("full_name, phone, trade_name, company_name, avatar_url").eq("id", user!.id).single(),
   ]);
+
+  // Completeness: phone + (trade_name or company_name) + avatar_url
+  const profileSteps = [
+    { done: !!profile?.phone, label: "Teléfono de contacto" },
+    { done: !!(profile?.trade_name || profile?.company_name), label: "Nombre de tu empresa" },
+    { done: !!profile?.avatar_url, label: "Foto de perfil" },
+  ];
+  const profileComplete = profileSteps.every((s) => s.done);
+  const completedCount = profileSteps.filter((s) => s.done).length;
 
   const totalCommissions = commissions?.filter(c => c.paid).reduce((sum, c) => sum + c.amount_cop, 0) ?? 0;
   const pendingCommissions = commissions?.filter(c => !c.paid).reduce((sum, c) => sum + c.amount_cop, 0) ?? 0;
@@ -34,7 +43,38 @@ export default async function BrokerDashboard() {
       <h2 className="text-2xl font-bold text-[#1A2A3A] mb-1">
         Bienvenido, {profile?.full_name?.split(" ")[0]} 👋
       </h2>
-      <p className="text-slate-500 mb-8">Aquí tienes un resumen de tu actividad</p>
+      <p className="text-slate-500 mb-6">Aquí tienes un resumen de tu actividad</p>
+
+      {/* Profile completion banner */}
+      {!profileComplete && (
+        <Link href="/broker/settings" className="block mb-8">
+          <div className="bg-gradient-to-r from-[#1A2A3A] to-[#243447] rounded-xl px-6 py-4 flex items-center gap-5 hover:from-[#243447] hover:to-[#2e4057] transition group">
+            <div className="w-12 h-12 bg-[#FFC107] rounded-full flex items-center justify-center text-2xl shrink-0">
+              🪪
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-white font-bold text-sm">
+                Completa tu perfil para personalizar tus propuestas
+              </p>
+              <p className="text-slate-400 text-xs mt-0.5">
+                {completedCount}/3 pasos completos ·{" "}
+                {profileSteps.filter((s) => !s.done).map((s) => s.label).join(", ")}
+              </p>
+              {/* progress bar */}
+              <div className="mt-2 h-1.5 bg-slate-600 rounded-full w-48 overflow-hidden">
+                <div
+                  className="h-full bg-[#FFC107] rounded-full transition-all"
+                  style={{ width: `${(completedCount / 3) * 100}%` }}
+                />
+              </div>
+            </div>
+            <span className="text-[#FFC107] text-sm font-semibold group-hover:translate-x-0.5 transition-transform">
+              Completar →
+            </span>
+          </div>
+        </Link>
+      )}
+
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard icon="📋" label="Cotizaciones activas" value={String(activeQuotes)} color="#FFC107" />

@@ -31,6 +31,10 @@ type QuoteData = {
   broker_name: string;
   broker_email: string;
   broker_phone: string | null;
+  broker_trade_name: string | null;
+  broker_company_name: string | null;
+  broker_logo_url: string | null;
+  broker_avatar_url: string | null;
 };
 
 const IVA_EXEMPT = ["panel", "estructura"];
@@ -89,9 +93,9 @@ export default function QuoteViewPage() {
     }
 
     // Broker profile
-    const { data: profile } = await supabase
+    const { data: profile } = await (supabase as any)
       .from("profiles")
-      .select("full_name, email, phone")
+      .select("full_name, email, phone, trade_name, company_name, logo_url, avatar_url")
       .eq("id", user.id)
       .single();
 
@@ -105,6 +109,10 @@ export default function QuoteViewPage() {
       broker_name: profile?.full_name ?? user.email ?? "",
       broker_email: profile?.email ?? user.email ?? "",
       broker_phone: profile?.phone ?? null,
+      broker_trade_name: profile?.trade_name ?? null,
+      broker_company_name: profile?.company_name ?? null,
+      broker_logo_url: profile?.logo_url ?? null,
+      broker_avatar_url: profile?.avatar_url ?? null,
     });
     setLoading(false);
   }
@@ -644,27 +652,59 @@ export default function QuoteViewPage() {
         </div>
 
         {/* FOOTER */}
-        <div className="bg-[#1A2A3A] px-8 py-5 grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-[#FFC107] font-black text-sm tracking-wide">
-              SOLARWIN ENERGÍAS SOLARES S.A.S
-            </p>
-            <p className="text-slate-400 text-xs mt-1">
-              Especialistas en soluciones fotovoltaicas para Colombia
-            </p>
-            <p className="text-slate-300 text-xs mt-2">📧 hola@solarwin.co</p>
-            <p className="text-slate-300 text-xs">🌐 solarwin.co</p>
-          </div>
-          <div className="text-right">
-            <p className="text-white font-semibold text-sm">{quote.broker_name}</p>
-            <p className="text-slate-400 text-xs mt-0.5">Asesor Solarwin</p>
-            <p className="text-slate-300 text-xs mt-1">{quote.broker_email}</p>
-            {quote.broker_phone && (
-              <p className="text-slate-300 text-xs">{quote.broker_phone}</p>
+        <div className="bg-[#1A2A3A] px-8 py-5 grid grid-cols-2 gap-4 items-center">
+          {/* Left: company brand */}
+          <div className="flex items-center gap-3">
+            {quote.broker_logo_url ? (
+              <img
+                src={quote.broker_logo_url}
+                alt="Logo"
+                className="h-10 w-auto object-contain rounded"
+              />
+            ) : (
+              <div className="w-10 h-10 bg-[#FFC107] rounded-full flex items-center justify-center text-xl font-bold text-[#1A2A3A] shrink-0">
+                ☀
+              </div>
             )}
-            <p className="text-slate-500 text-xs mt-2">
-              Propuesta válida por 15 días · {quoteDate}
-            </p>
+            <div>
+              <p className="text-[#FFC107] font-black text-sm tracking-wide leading-tight">
+                {quote.broker_trade_name ||
+                  quote.broker_company_name ||
+                  "SOLARWIN ENERGÍAS SOLARES S.A.S"}
+              </p>
+              <p className="text-slate-400 text-xs mt-0.5">
+                {quote.broker_company_name &&
+                quote.broker_trade_name &&
+                quote.broker_company_name !== quote.broker_trade_name
+                  ? quote.broker_company_name
+                  : "Especialistas en soluciones fotovoltaicas para Colombia"}
+              </p>
+            </div>
+          </div>
+          {/* Right: broker contact with avatar */}
+          <div className="flex items-center justify-end gap-3">
+            <div className="text-right">
+              <p className="text-white font-semibold text-sm">{quote.broker_name}</p>
+              <p className="text-slate-400 text-xs mt-0.5">Asesor comercial</p>
+              <p className="text-slate-300 text-xs mt-1">{quote.broker_email}</p>
+              {quote.broker_phone && (
+                <p className="text-slate-300 text-xs">{quote.broker_phone}</p>
+              )}
+              <p className="text-slate-500 text-xs mt-2">
+                Propuesta válida por 15 días · {quoteDate}
+              </p>
+            </div>
+            {quote.broker_avatar_url ? (
+              <img
+                src={quote.broker_avatar_url}
+                alt={quote.broker_name}
+                className="w-14 h-14 rounded-full object-cover border-2 border-[#FFC107] shrink-0"
+              />
+            ) : (
+              <div className="w-14 h-14 rounded-full bg-slate-600 flex items-center justify-center text-white font-bold text-xl shrink-0">
+                {quote.broker_name[0]?.toUpperCase() ?? "A"}
+              </div>
+            )}
           </div>
         </div>
       </div>
