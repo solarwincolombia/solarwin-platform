@@ -76,15 +76,15 @@ export default async function BrokerDashboard() {
       )}
 
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
         <StatCard icon="📋" label="Cotizaciones activas" value={String(activeQuotes)} color="#FFC107" />
         <StatCard icon="✅" label="Proyectos cerrados" value={String(closedQuotes)} color="#22C55E" />
         <StatCard icon="💰" label="Comisiones ganadas" value={fmt(totalCommissions)} color="#3B82F6" />
         <StatCard icon="⏳" label="Pendiente de pago" value={fmt(pendingCommissions)} color="#8B5CF6" />
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 bg-white rounded-xl p-6 shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        <div className="md:col-span-2 bg-white rounded-xl p-4 md:p-6 shadow-sm overflow-x-auto">
           <h3 className="text-[#1A2A3A] font-semibold mb-4">Cotizaciones recientes</h3>
           {quotes?.length === 0 ? (
             <p className="text-slate-400 text-sm">Aún no tienes cotizaciones. <Link href="/broker/quoter" className="text-blue-500 underline">Crear una →</Link></p>

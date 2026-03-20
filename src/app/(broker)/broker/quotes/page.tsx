@@ -267,28 +267,28 @@ export default function QuotesPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between mb-4 md:mb-5">
         <div>
-          <h2 className="text-2xl font-bold text-[#1A2A3A]">Pipeline de ventas</h2>
-          <p className="text-slate-500 text-sm mt-0.5">{quotes.length} cotizaciones · seguimiento en tiempo real</p>
+          <h2 className="text-xl md:text-2xl font-bold text-[#1A2A3A]">Pipeline de ventas</h2>
+          <p className="text-slate-500 text-xs md:text-sm mt-0.5">{quotes.length} cotizaciones</p>
         </div>
         <Link
           href="/broker/quoter"
-          className="bg-[#FFC107] text-[#1A2A3A] font-bold px-5 py-2.5 rounded-lg hover:bg-yellow-400 transition text-sm"
+          className="bg-[#FFC107] text-[#1A2A3A] font-bold px-3 md:px-5 py-2 md:py-2.5 rounded-lg hover:bg-yellow-400 transition text-xs md:text-sm whitespace-nowrap"
         >
-          ⚡ Nueva cotización
+          ⚡ <span className="hidden sm:inline">Nueva cotización</span><span className="sm:hidden">Nueva</span>
         </Link>
       </div>
 
       {/* Pipeline summary bar */}
-      <div className="grid grid-cols-7 gap-2 mb-5">
+      <div className="flex gap-2 mb-5 overflow-x-auto pb-1 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-7">
         {pipelineCounts.map((p) => {
           const s = getStatus(p.key);
           return (
             <button
               key={p.key}
               onClick={() => setFilter(filter === p.key ? "all" : p.key)}
-              className={`rounded-xl p-3 text-left transition border-2 ${
+              className={`rounded-xl p-3 text-left transition border-2 flex-shrink-0 w-[100px] md:w-auto ${
                 filter === p.key
                   ? "border-[#1A2A3A] bg-white shadow-md"
                   : "border-transparent bg-white shadow-sm hover:shadow-md"
@@ -322,7 +322,7 @@ export default function QuotesPage() {
         ))}
       </div>
 
-      {/* Table */}
+      {/* Table / Cards */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-slate-400 animate-pulse">Cargando…</div>
@@ -335,58 +335,76 @@ export default function QuotesPage() {
             </Link>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-100">
-                {["Cliente", "Ciudad", "Sistema", "kWp", "Valor", "Estado", "Nota", "Fecha", ""].map((h) => (
-                  <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((q) => (
-                <tr key={q.id} className="border-b border-slate-50 hover:bg-slate-50/70 transition">
-                  <td className="px-4 py-3.5">
-                    <p className="font-semibold text-[#1A2A3A]">{q.client_name}</p>
-                    {q.client_phone && (
-                      <p className="text-xs text-slate-400">{q.client_phone}</p>
-                    )}
-                  </td>
-                  <td className="px-4 py-3.5 text-slate-500">{q.city}</td>
-                  <td className="px-4 py-3.5 text-slate-500 text-xs">
-                    {SYSTEM_LABELS[q.system_type ?? "onGrid"] ?? "OnGrid"}
-                  </td>
-                  <td className="px-4 py-3.5 font-medium text-[#1A2A3A]">{q.kwp} kWp</td>
-                  <td className="px-4 py-3.5 font-bold text-[#1A2A3A]">{fmt(q.project_value_cop)}</td>
-                  <td className="px-4 py-3.5">
-                    <StatusDropdown
-                      quoteId={q.id}
-                      current={q.status}
-                      onChanged={handleStatusChange}
-                    />
-                  </td>
-                  <td className="px-4 py-3.5">
-                    <NotePopover
-                      quoteId={q.id}
-                      note={q.nota_seguimiento}
-                      onSaved={handleNoteChange}
-                    />
-                  </td>
-                  <td className="px-4 py-3.5 text-slate-400 text-xs">{fmtDate(q.created_at)}</td>
-                  <td className="px-4 py-3.5">
-                    <Link
-                      href={`/broker/quotes/${q.id}`}
-                      className="bg-[#1A2A3A] text-white text-xs px-3 py-1.5 rounded-lg hover:bg-[#243447] transition font-semibold whitespace-nowrap"
-                    >
-                      Ver propuesta
-                    </Link>
-                  </td>
+          <>
+            {/* Desktop table */}
+            <table className="hidden md:table w-full text-sm">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100">
+                  {["Cliente", "Ciudad", "Sistema", "kWp", "Valor", "Estado", "Nota", "Fecha", ""].map((h) => (
+                    <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                      {h}
+                    </th>
+                  ))}
                 </tr>
+              </thead>
+              <tbody>
+                {filtered.map((q) => (
+                  <tr key={q.id} className="border-b border-slate-50 hover:bg-slate-50/70 transition">
+                    <td className="px-4 py-3.5">
+                      <p className="font-semibold text-[#1A2A3A]">{q.client_name}</p>
+                      {q.client_phone && <p className="text-xs text-slate-400">{q.client_phone}</p>}
+                    </td>
+                    <td className="px-4 py-3.5 text-slate-500">{q.city}</td>
+                    <td className="px-4 py-3.5 text-slate-500 text-xs">{SYSTEM_LABELS[q.system_type ?? "onGrid"] ?? "OnGrid"}</td>
+                    <td className="px-4 py-3.5 font-medium text-[#1A2A3A]">{q.kwp} kWp</td>
+                    <td className="px-4 py-3.5 font-bold text-[#1A2A3A]">{fmt(q.project_value_cop)}</td>
+                    <td className="px-4 py-3.5">
+                      <StatusDropdown quoteId={q.id} current={q.status} onChanged={handleStatusChange} />
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <NotePopover quoteId={q.id} note={q.nota_seguimiento} onSaved={handleNoteChange} />
+                    </td>
+                    <td className="px-4 py-3.5 text-slate-400 text-xs">{fmtDate(q.created_at)}</td>
+                    <td className="px-4 py-3.5">
+                      <Link href={`/broker/quotes/${q.id}`}
+                        className="bg-[#1A2A3A] text-white text-xs px-3 py-1.5 rounded-lg hover:bg-[#243447] transition font-semibold whitespace-nowrap">
+                        Ver propuesta
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Mobile cards */}
+            <div className="md:hidden divide-y divide-slate-100">
+              {filtered.map((q) => (
+                <div key={q.id} className="p-4">
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <div>
+                      <p className="font-semibold text-[#1A2A3A]">{q.client_name}</p>
+                      <p className="text-xs text-slate-400">{q.city} · {fmtDate(q.created_at)}</p>
+                    </div>
+                    <StatusDropdown quoteId={q.id} current={q.status} onChanged={handleStatusChange} />
+                  </div>
+                  <div className="flex items-center gap-3 text-sm mb-3">
+                    <span className="font-bold text-[#1A2A3A]">{fmt(q.project_value_cop)}</span>
+                    <span className="text-slate-400">·</span>
+                    <span className="text-slate-500">{q.kwp} kWp</span>
+                    <span className="text-slate-400">·</span>
+                    <span className="text-slate-500 text-xs">{SYSTEM_LABELS[q.system_type ?? "onGrid"] ?? "OnGrid"}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Link href={`/broker/quotes/${q.id}`}
+                      className="flex-1 text-center bg-[#1A2A3A] text-white text-xs px-3 py-2 rounded-lg hover:bg-[#243447] transition font-semibold">
+                      Ver propuesta →
+                    </Link>
+                    <NotePopover quoteId={q.id} note={q.nota_seguimiento} onSaved={handleNoteChange} />
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </>
         )}
       </div>
 

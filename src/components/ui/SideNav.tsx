@@ -12,7 +12,7 @@ export default function SideNav({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
 
   return (
-    <aside className="w-56 bg-white border-r border-slate-100 min-h-[calc(100vh-56px)] py-6 flex-shrink-0">
+    <aside className="hidden md:block w-56 bg-white border-r border-slate-100 min-h-[calc(100vh-56px)] py-6 flex-shrink-0">
       {items.map(item => {
         const active = pathname === item.href || pathname.startsWith(item.href + "/");
         return (

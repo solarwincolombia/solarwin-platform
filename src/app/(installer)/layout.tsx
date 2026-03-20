@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import TopBar from "@/components/ui/TopBar";
 import SideNav from "@/components/ui/SideNav";
+import BottomNav from "@/components/ui/BottomNav";
 
 const NAV_ITEMS = [
   { href: "/installer/dashboard", icon: "🏠", label: "Inicio" },
@@ -32,10 +33,11 @@ export default async function InstallerLayout({ children }: { children: React.Re
       <TopBar userName={profile.full_name} role="installer" />
       <div className="flex">
         <SideNav items={NAV_ITEMS} />
-        <main className="flex-1 bg-[#F5F7FA] min-h-[calc(100vh-56px)] p-8">
+        <main className="flex-1 bg-[#F5F7FA] min-h-[calc(100vh-56px)] p-4 md:p-8 pb-20 md:pb-8">
           {children}
         </main>
       </div>
+      <BottomNav items={NAV_ITEMS} />
     </div>
   );
 }
