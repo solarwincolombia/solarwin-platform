@@ -11,6 +11,7 @@ type Profile = {
   trade_name: string | null;
   logo_url: string | null;
   avatar_url: string | null;
+  commission_rate: number;
 };
 
 export default function BrokerSettingsPage() {
@@ -23,6 +24,7 @@ export default function BrokerSettingsPage() {
     trade_name: "",
     logo_url: "",
     avatar_url: "",
+    commission_rate: 10,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -42,7 +44,7 @@ export default function BrokerSettingsPage() {
 
     const { data } = await (supabase as any)
       .from("profiles")
-      .select("full_name, email, phone, city, company_name, trade_name, logo_url, avatar_url")
+      .select("full_name, email, phone, city, company_name, trade_name, logo_url, avatar_url, commission_rate")
       .eq("id", user.id)
       .single();
 
@@ -56,6 +58,7 @@ export default function BrokerSettingsPage() {
         trade_name: data.trade_name ?? "",
         logo_url: data.logo_url ?? "",
         avatar_url: data.avatar_url ?? "",
+        commission_rate: data.commission_rate ?? 10,
       });
     }
     setLoading(false);
@@ -82,6 +85,7 @@ export default function BrokerSettingsPage() {
         trade_name: profile.trade_name || null,
         logo_url: profile.logo_url || null,
         avatar_url: profile.avatar_url || null,
+        commission_rate: profile.commission_rate || 10,
       })
       .eq("id", user.id);
 
@@ -161,6 +165,29 @@ export default function BrokerSettingsPage() {
                 placeholder="Bogotá"
                 className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFC107]"
               />
+            </div>
+            <div className="col-span-2">
+              <label className="text-xs text-slate-500 font-medium block mb-1">
+                Tu comisión sobre utilidad{" "}
+                <span className="text-[#FFC107] font-semibold">(% del margen por proyecto)</span>
+              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="number"
+                  min={1}
+                  max={50}
+                  step={0.5}
+                  value={profile.commission_rate}
+                  onChange={(e) =>
+                    setProfile((p) => ({ ...p, commission_rate: parseFloat(e.target.value) || 10 }))
+                  }
+                  className="w-24 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFC107]"
+                />
+                <span className="text-sm text-slate-500 font-semibold">%</span>
+                <span className="text-xs text-slate-400">
+                  Ej: utilidad $50M × {profile.commission_rate}% = comisión ${((50 * profile.commission_rate) / 100).toFixed(1)}M
+                </span>
+              </div>
             </div>
           </div>
         </div>

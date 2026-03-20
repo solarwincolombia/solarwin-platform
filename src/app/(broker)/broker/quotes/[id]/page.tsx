@@ -3,6 +3,31 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
+const STATUS_OPTIONS = [
+  { key: "borrador",       label: "📝 Borrador"           },
+  { key: "enviada",        label: "📤 Enviada al cliente"  },
+  { key: "en_negociacion", label: "🤝 En negociación"     },
+  { key: "aceptada",       label: "✅ Aceptada"            },
+  { key: "negativa",       label: "❌ Negativa"            },
+  { key: "instalacion",    label: "🔧 En instalación"      },
+  { key: "cerrada",        label: "🏁 Cerrada"             },
+];
+
+const STATUS_STYLE: Record<string, string> = {
+  borrador: "bg-slate-100 text-slate-600",
+  draft: "bg-slate-100 text-slate-600",
+  enviada: "bg-blue-100 text-blue-700",
+  en_negociacion: "bg-yellow-100 text-yellow-700",
+  aceptada: "bg-green-100 text-green-700",
+  approved: "bg-green-100 text-green-700",
+  negativa: "bg-red-100 text-red-700",
+  rejected: "bg-red-100 text-red-700",
+  instalacion: "bg-orange-100 text-orange-700",
+  cerrada: "bg-teal-100 text-teal-700",
+  closed: "bg-teal-100 text-teal-700",
+  pending: "bg-yellow-100 text-yellow-700",
+};
+
 type QuoteItem = {
   id: string;
   name: string;
@@ -25,10 +50,12 @@ type QuoteData = {
   kwp: number;
   num_panels: number;
   project_value_cop: number;
+  costo_proyecto_cop: number;
   status: string;
   created_at: string;
   items: QuoteItem[];
   broker_name: string;
+  broker_commission_rate: number;
   broker_email: string;
   broker_phone: string | null;
   broker_trade_name: string | null;
@@ -51,6 +78,9 @@ export default function QuoteViewPage() {
   const [quote, setQuote] = useState<QuoteData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [costoInput, setCostoInput] = useState("");
+  const [savingCosto, setSavingCosto] = useState(false);
+  const [savingStatus, setSavingStatus] = useState(false);
 
   useEffect(() => {
     loadQuote();
@@ -95,16 +125,18 @@ export default function QuoteViewPage() {
     // Broker profile
     const { data: profile } = await (supabase as any)
       .from("profiles")
-      .select("full_name, email, phone, trade_name, company_name, logo_url, avatar_url")
+      .select("full_name, email, phone, trade_name, company_name, logo_url, avatar_url, commission_rate")
       .eq("id", user.id)
       .single();
 
+    const costo = quoteData.costo_proyecto_cop ?? 0;
     setQuote({
       ...quoteData,
       client_phone: quoteData.client_phone ?? null,
       property_address: quoteData.property_address ?? null,
       system_type: quoteData.system_type ?? "onGrid",
       monthly_bill_cop: quoteData.monthly_bill_cop ?? 0,
+      costo_proyecto_cop: costo,
       items,
       broker_name: profile?.full_name ?? user.email ?? "",
       broker_email: profile?.email ?? user.email ?? "",
@@ -113,7 +145,9 @@ export default function QuoteViewPage() {
       broker_company_name: profile?.company_name ?? null,
       broker_logo_url: profile?.logo_url ?? null,
       broker_avatar_url: profile?.avatar_url ?? null,
+      broker_commission_rate: profile?.commission_rate ?? 10,
     });
+    setCostoInput(costo > 0 ? String(costo) : "");
     setLoading(false);
   }
 
@@ -130,6 +164,26 @@ export default function QuoteViewPage() {
         <div className="text-red-400 text-sm">{error ?? "Error cargando propuesta"}</div>
       </div>
     );
+  }
+
+  // ── Helpers ──────────────────────────────────────────────────
+  async function handleStatusChange(newStatus: string) {
+    if (!quote) return;
+    setSavingStatus(true);
+    const supabase = createClient();
+    await (supabase as any).from("quotes").update({ status: newStatus }).eq("id", quote.id);
+    setQuote((q) => q ? { ...q, status: newStatus } : q);
+    setSavingStatus(false);
+  }
+
+  async function handleSaveCosto() {
+    if (!quote) return;
+    setSavingCosto(true);
+    const costo = parseInt(costoInput.replace(/\D/g, "")) || 0;
+    const supabase = createClient();
+    await (supabase as any).from("quotes").update({ costo_proyecto_cop: costo }).eq("id", quote.id);
+    setQuote((q) => q ? { ...q, costo_proyecto_cop: costo } : q);
+    setSavingCosto(false);
   }
 
   // ── Calculations ─────────────────────────────────────────────
@@ -179,35 +233,111 @@ export default function QuoteViewPage() {
       `}</style>
 
       {/* Action bar */}
-      <div className="no-print flex items-center gap-3 mb-6">
+      <div className="no-print flex items-center gap-3 mb-4">
         <button
           onClick={() => window.history.back()}
           className="text-slate-500 hover:text-slate-700 text-sm transition"
         >
-          ← Volver a cotizaciones
+          ← Volver
         </button>
         <div className="flex-1" />
-        <span
-          className={`text-xs font-semibold px-3 py-1 rounded-full ${
-            quote.status === "approved"
-              ? "bg-green-100 text-green-700"
-              : quote.status === "draft"
-              ? "bg-slate-100 text-slate-600"
-              : "bg-yellow-100 text-yellow-700"
-          }`}
+        {/* Status selector */}
+        <select
+          value={quote.status}
+          onChange={(e) => handleStatusChange(e.target.value)}
+          disabled={savingStatus}
+          className={`text-xs font-semibold px-3 py-1.5 rounded-lg border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#FFC107] ${STATUS_STYLE[quote.status] ?? "bg-slate-100 text-slate-600"}`}
         >
-          {quote.status === "draft"
-            ? "Borrador"
-            : quote.status === "approved"
-            ? "Aprobada"
-            : quote.status}
-        </span>
+          {STATUS_OPTIONS.map((s) => (
+            <option key={s.key} value={s.key}>{s.label}</option>
+          ))}
+        </select>
         <button
           onClick={() => window.print()}
           className="bg-[#1A2A3A] text-white font-semibold px-5 py-2 rounded-lg hover:bg-[#243447] transition text-sm flex items-center gap-2"
         >
           🖨️ Descargar PDF
         </button>
+      </div>
+
+      {/* Commission panel */}
+      <div className="no-print bg-white rounded-xl shadow-sm p-5 mb-6 border-l-4 border-[#FFC107]">
+        <h3 className="font-bold text-[#1A2A3A] text-sm mb-4 uppercase tracking-wide">
+          💰 Análisis de comisión (interno)
+        </h3>
+        <div className="grid grid-cols-4 gap-4 items-end">
+          {/* Costo del proyecto */}
+          <div>
+            <label className="text-xs text-slate-500 font-medium block mb-1">
+              Costo del proyecto (COP)
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={costoInput}
+                onChange={(e) => setCostoInput(e.target.value)}
+                placeholder="Ej: 155000000"
+                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFC107]"
+              />
+              <button
+                onClick={handleSaveCosto}
+                disabled={savingCosto}
+                className="bg-[#1A2A3A] text-white text-xs font-semibold px-3 py-2 rounded-lg hover:bg-[#243447] transition disabled:opacity-60 whitespace-nowrap"
+              >
+                {savingCosto ? "…" : "Guardar"}
+              </button>
+            </div>
+            <p className="text-xs text-slate-400 mt-1">Solo visible para vos, no aparece en la propuesta</p>
+          </div>
+
+          {/* Valor venta */}
+          <div className="bg-slate-50 rounded-xl p-3 text-center">
+            <p className="text-xs text-slate-400 mb-1">Valor de venta</p>
+            <p className="font-black text-[#1A2A3A] text-xl">
+              ${Math.round(total / 1_000_000).toLocaleString("es-CO")}M
+            </p>
+          </div>
+
+          {/* Margen */}
+          <div className={`rounded-xl p-3 text-center ${
+            total - (parseInt(costoInput.replace(/\D/g, "")) || quote.costo_proyecto_cop) > 0
+              ? "bg-green-50"
+              : "bg-red-50"
+          }`}>
+            <p className="text-xs text-slate-400 mb-1">Margen / Utilidad</p>
+            {(() => {
+              const costo = parseInt(costoInput.replace(/\D/g, "")) || quote.costo_proyecto_cop;
+              const margen = total - costo;
+              const pct = costo > 0 ? ((margen / total) * 100).toFixed(0) : "—";
+              return (
+                <>
+                  <p className={`font-black text-xl ${margen > 0 ? "text-green-600" : "text-red-500"}`}>
+                    ${Math.round(margen / 1_000_000).toLocaleString("es-CO")}M
+                  </p>
+                  <p className="text-xs text-slate-400">{pct}% del proyecto</p>
+                </>
+              );
+            })()}
+          </div>
+
+          {/* Comisión */}
+          <div className="bg-[#1A2A3A] rounded-xl p-3 text-center">
+            <p className="text-xs text-slate-400 mb-1">
+              Tu comisión ({quote.broker_commission_rate}%)
+            </p>
+            {(() => {
+              const costo = parseInt(costoInput.replace(/\D/g, "")) || quote.costo_proyecto_cop;
+              const margen = total - costo;
+              const comision = margen > 0 ? margen * (quote.broker_commission_rate / 100) : 0;
+              return (
+                <p className="font-black text-[#FFC107] text-2xl">
+                  ${Math.round(comision / 1_000_000).toLocaleString("es-CO")}M
+                </p>
+              );
+            })()}
+            <p className="text-xs text-slate-500 mt-0.5">sobre la utilidad</p>
+          </div>
+        </div>
       </div>
 
       {/* ── QUOTE DOCUMENT ──────────────────────────────────────── */}
