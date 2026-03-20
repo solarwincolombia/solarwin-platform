@@ -4,6 +4,8 @@ export type QuoteStatus = "draft" | "pending" | "approved" | "rejected" | "close
 
 export type ProjectStage = "design" | "equipment" | "installation" | "delivered";
 
+export type SystemType = "onGrid" | "offGrid" | "hybrid";
+
 export interface Database {
   public: {
     Tables: {
@@ -28,8 +30,12 @@ export interface Database {
           broker_id: string;
           client_name: string;
           client_email: string | null;
+          client_phone: string | null;
           city: string;
+          property_address: string | null;
+          system_type: string;
           monthly_consumption_kwh: number;
+          monthly_bill_cop: number;
           num_panels: number;
           kwp: number;
           roof_type: "plana" | "inclinada" | "carport";
@@ -44,6 +50,21 @@ export interface Database {
         };
         Insert: Omit<Database["public"]["Tables"]["quotes"]["Row"], "id" | "created_at" | "updated_at">;
         Update: Partial<Database["public"]["Tables"]["quotes"]["Insert"]>;
+      };
+      quote_items: {
+        Row: {
+          id: string;
+          quote_id: string;
+          catalog_item_id: string | null;
+          name: string;
+          description: string;
+          category: string;
+          quantity: number;
+          unit_price_cop: number;
+          created_at: string;
+        };
+        Insert: Omit<Database["public"]["Tables"]["quote_items"]["Row"], "id" | "created_at">;
+        Update: Partial<Database["public"]["Tables"]["quote_items"]["Insert"]>;
       };
       projects: {
         Row: {
@@ -90,6 +111,8 @@ export interface Database {
           partner_price_cop: number;
           stock: number;
           active: boolean;
+          category: string;
+          wattage_wp: number | null;
         };
         Insert: Omit<Database["public"]["Tables"]["equipment_catalog"]["Row"], "id">;
         Update: Partial<Database["public"]["Tables"]["equipment_catalog"]["Insert"]>;
