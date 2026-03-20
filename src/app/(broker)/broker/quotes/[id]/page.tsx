@@ -223,8 +223,8 @@ export default function QuoteViewPage() {
               ☀
             </div>
             <div>
-              <p className="text-white font-black text-lg tracking-wide leading-none">SOLARWIN</p>
-              <p className="text-slate-400 text-xs mt-0.5">ENERGÍAS SOLARES S.A.S</p>
+              <p className="text-white font-black text-lg tracking-wide leading-none">SOLARWIN SAS</p>
+              <p className="text-slate-400 text-xs mt-0.5">Energías Solares</p>
             </div>
           </div>
           <div className="text-right">
@@ -670,7 +670,7 @@ export default function QuoteViewPage() {
               <p className="text-[#FFC107] font-black text-sm tracking-wide leading-tight">
                 {quote.broker_trade_name ||
                   quote.broker_company_name ||
-                  "SOLARWIN ENERGÍAS SOLARES S.A.S"}
+                  "SOLARWIN SAS"}
               </p>
               <p className="text-slate-400 text-xs mt-0.5">
                 {quote.broker_company_name &&

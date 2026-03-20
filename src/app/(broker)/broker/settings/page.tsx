@@ -100,7 +100,7 @@ export default function BrokerSettingsPage() {
       setProfile((p) => ({ ...p, [field]: e.target.value })),
   });
 
-  const displayName = profile.trade_name || profile.company_name || "SOLARWIN ENERGÍAS SOLARES S.A.S";
+  const displayName = profile.trade_name || profile.company_name || "SOLARWIN SAS";
   const hasLogo = profile.logo_url && profile.logo_url.trim().length > 0;
   const hasAvatar = profile.avatar_url && profile.avatar_url.trim().length > 0;
 
