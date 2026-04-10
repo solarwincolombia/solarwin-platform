@@ -111,9 +111,9 @@ export default function QuoterPage() {
     .reduce((s, i) => s + i.unit_price_cop * i.quantity * 0.19, 0);
 
   const total = subtotal + iva;
-  const commission1 = Math.round(total * 0.5 * 0.25);
-  const commission2 = Math.round(total * 0.5 * 0.2);
-  const commission3 = Math.round(total * 0.5 * 0.15);
+  const commission1 = Math.round(subtotal * 0.04); // 4% sobre FC antes de IVA
+   const commission2 = 0;
+   const commission3 = 0;
 
   // Suggested panels (630W baseline, 1440 kWh/kWp/yr)
   const suggestedPanels = consumption.monthlyKwh
