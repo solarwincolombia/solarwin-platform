@@ -19,21 +19,21 @@ type Quote = {
   nota_seguimiento: string | null;
 };
 
-// ââ Status config ââââââââââââââââââââââââââââââââââââââââââââ
+// ── Status config ────────────────────────────────────────────
 const STATUSES = [
-  { key: "borrador",       label: "Borrador",       emoji: "ð", color: "bg-slate-100 text-slate-600",   dot: "bg-slate-400"   },
-  { key: "enviada",        label: "Enviada",         emoji: "ð¤", color: "bg-blue-100 text-blue-700",     dot: "bg-blue-500"    },
-  { key: "en_negociacion", label: "Negociando",      emoji: "ð¤", color: "bg-yellow-100 text-yellow-700", dot: "bg-yellow-500"  },
-  { key: "aceptada",       label: "Aceptada",        emoji: "â", color: "bg-green-100 text-green-700",   dot: "bg-green-500"   },
-  { key: "negativa",       label: "Negativa",        emoji: "â", color: "bg-red-100 text-red-700",       dot: "bg-red-400"     },
-  { key: "instalacion",    label: "En instalaciÃ³n",  emoji: "ð§", color: "bg-orange-100 text-orange-700", dot: "bg-orange-500"  },
-  { key: "cerrada",        label: "Cerrada",         emoji: "ð", color: "bg-teal-100 text-teal-700",     dot: "bg-teal-500"    },
+  { key: "borrador",       label: "Borrador",       emoji: "📝", color: "bg-slate-100 text-slate-600",   dot: "bg-slate-400"   },
+  { key: "enviada",        label: "Enviada",         emoji: "📤", color: "bg-blue-100 text-blue-700",     dot: "bg-blue-500"    },
+  { key: "en_negociacion", label: "Negociando",      emoji: "🤝", color: "bg-yellow-100 text-yellow-700", dot: "bg-yellow-500"  },
+  { key: "aceptada",       label: "Aceptada",        emoji: "✅", color: "bg-green-100 text-green-700",   dot: "bg-green-500"   },
+  { key: "negativa",       label: "Negativa",        emoji: "❌", color: "bg-red-100 text-red-700",       dot: "bg-red-400"     },
+  { key: "instalacion",    label: "En instalación",  emoji: "🔧", color: "bg-orange-100 text-orange-700", dot: "bg-orange-500"  },
+  { key: "cerrada",        label: "Cerrada",         emoji: "🏁", color: "bg-teal-100 text-teal-700",     dot: "bg-teal-500"    },
   // legacy values
-  { key: "draft",          label: "Borrador",        emoji: "ð", color: "bg-slate-100 text-slate-600",   dot: "bg-slate-400"   },
-  { key: "pending",        label: "En revisiÃ³n",     emoji: "â³", color: "bg-yellow-100 text-yellow-700", dot: "bg-yellow-400"  },
-  { key: "approved",       label: "Aprobada",        emoji: "â", color: "bg-green-100 text-green-700",   dot: "bg-green-500"   },
-  { key: "rejected",       label: "Rechazada",       emoji: "â", color: "bg-red-100 text-red-700",       dot: "bg-red-400"     },
-  { key: "closed",         label: "Cerrada",         emoji: "ð", color: "bg-teal-100 text-teal-700",     dot: "bg-teal-500"    },
+  { key: "draft",          label: "Borrador",        emoji: "📝", color: "bg-slate-100 text-slate-600",   dot: "bg-slate-400"   },
+  { key: "pending",        label: "En revisión",     emoji: "⏳", color: "bg-yellow-100 text-yellow-700", dot: "bg-yellow-400"  },
+  { key: "approved",       label: "Aprobada",        emoji: "✅", color: "bg-green-100 text-green-700",   dot: "bg-green-500"   },
+  { key: "rejected",       label: "Rechazada",       emoji: "❌", color: "bg-red-100 text-red-700",       dot: "bg-red-400"     },
+  { key: "closed",         label: "Cerrada",         emoji: "🏁", color: "bg-teal-100 text-teal-700",     dot: "bg-teal-500"    },
 ];
 
 function getStatus(key: string) {
@@ -47,25 +47,25 @@ const PIPELINE = [
   { key: "en_negociacion", label: "Negociando"  },
   { key: "aceptada",       label: "Aceptadas"   },
   { key: "negativa",       label: "Negativas"   },
-  { key: "instalacion",    label: "InstalaciÃ³n" },
+  { key: "instalacion",    label: "Instalación" },
   { key: "cerrada",        label: "Cerradas"    },
 ];
 
 const TRANSITION_OPTIONS = [
-  { key: "borrador",       label: "ð Borrador"        },
-  { key: "enviada",        label: "ð¤ Enviada al cliente" },
-  { key: "en_negociacion", label: "ð¤ En negociaciÃ³n"  },
-  { key: "aceptada",       label: "â Aceptada"         },
-  { key: "negativa",       label: "â Negativa"         },
-  { key: "instalacion",    label: "ð§ En instalaciÃ³n"   },
-  { key: "cerrada",        label: "ð Cerrada"          },
+  { key: "borrador",       label: "📝 Borrador"        },
+  { key: "enviada",        label: "📤 Enviada al cliente" },
+  { key: "en_negociacion", label: "🤝 En negociación"  },
+  { key: "aceptada",       label: "✅ Aceptada"         },
+  { key: "negativa",       label: "❌ Negativa"         },
+  { key: "instalacion",    label: "🔧 En instalación"   },
+  { key: "cerrada",        label: "🏁 Cerrada"          },
 ];
 
 const SYSTEM_LABELS: Record<string, string> = {
-  onGrid: "OnGrid", offGrid: "OffGrid", hybrid: "HÃ­brido",
+  onGrid: "OnGrid", offGrid: "OffGrid", hybrid: "Híbrido",
 };
 
-// ââ StatusDropdown âââââââââââââââââââââââââââââââââââââââââââ
+// ── StatusDropdown ───────────────────────────────────────────
 function StatusDropdown({
   quoteId,
   current,
@@ -106,8 +106,8 @@ function StatusDropdown({
         className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full transition ${s.color} hover:opacity-80`}
       >
         <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
-        {saving ? "â¦" : s.label}
-        <span className="opacity-60 text-[10px]">â¼</span>
+        {saving ? "…" : s.label}
+        <span className="opacity-60 text-[10px]">▼</span>
       </button>
       {open && (
         <div className="absolute left-0 top-8 z-50 bg-white rounded-xl shadow-xl border border-slate-100 py-1.5 min-w-[200px]">
@@ -128,7 +128,7 @@ function StatusDropdown({
   );
 }
 
-// ââ NotePopover ââââââââââââââââââââââââââââââââââââââââââââââ
+// ── NotePopover ──────────────────────────────────────────────
 function NotePopover({
   quoteId,
   note,
@@ -176,7 +176,7 @@ function NotePopover({
           note ? "text-[#FFC107] hover:text-yellow-500" : "text-slate-300 hover:text-slate-500"
         }`}
       >
-        {note ? "ð" : "ð"}
+        {note ? "📌" : "📝"}
       </button>
       {open && (
         <div className="absolute right-0 top-8 z-50 bg-white rounded-xl shadow-xl border border-slate-100 p-4 w-72">
@@ -185,7 +185,7 @@ function NotePopover({
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={3}
-            placeholder="Ej: Cliente pidiÃ³ recontactar el lunes, tiene reuniÃ³n de junta primero..."
+            placeholder="Ej: Cliente pidió recontactar el lunes, tiene reunión de junta primero..."
             className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFC107] resize-none"
           />
           <div className="flex gap-2 mt-2">
@@ -194,7 +194,7 @@ function NotePopover({
               disabled={saving}
               className="bg-[#1A2A3A] text-white text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-[#243447] transition disabled:opacity-60"
             >
-              {saving ? "Guardandoâ¦" : "Guardar"}
+              {saving ? "Guardando…" : "Guardar"}
             </button>
             <button
               onClick={() => setOpen(false)}
@@ -209,7 +209,7 @@ function NotePopover({
   );
 }
 
-// ââ Main Page ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── Main Page ────────────────────────────────────────────────
 export default function QuotesPage() {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [filter, setFilter] = useState("all");
@@ -276,7 +276,7 @@ export default function QuotesPage() {
           href="/installer/quoter"
           className="bg-[#FFC107] text-[#1A2A3A] font-bold px-3 md:px-5 py-2 md:py-2.5 rounded-lg hover:bg-yellow-400 transition text-xs md:text-sm whitespace-nowrap"
         >
-          â¡ <span className="hidden sm:inline">Nueva cotizaciÃ³n</span><span className="sm:hidden">Nueva</span>
+          ⚡ <span className="hidden sm:inline">Nueva cotización</span><span className="sm:hidden">Nueva</span>
         </Link>
       </div>
 
@@ -325,13 +325,13 @@ export default function QuotesPage() {
       {/* Table / Cards */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-slate-400 animate-pulse">Cargandoâ¦</div>
+          <div className="p-12 text-center text-slate-400 animate-pulse">Cargando…</div>
         ) : filtered.length === 0 ? (
           <div className="p-12 text-center">
-            <div className="text-4xl mb-3">ð</div>
+            <div className="text-4xl mb-3">📋</div>
             <p className="text-slate-500 text-sm">No hay cotizaciones en esta etapa.</p>
             <Link href="/installer/quoter" className="text-blue-500 text-sm underline mt-2 block">
-              Crear una â
+              Crear una →
             </Link>
           </div>
         ) : (
@@ -383,21 +383,21 @@ export default function QuotesPage() {
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div>
                       <p className="font-semibold text-[#1A2A3A]">{q.client_name}</p>
-                      <p className="text-xs text-slate-400">{q.city} Â· {fmtDate(q.created_at)}</p>
+                      <p className="text-xs text-slate-400">{q.city} · {fmtDate(q.created_at)}</p>
                     </div>
                     <StatusDropdown quoteId={q.id} current={q.status} onChanged={handleStatusChange} />
                   </div>
                   <div className="flex items-center gap-3 text-sm mb-3">
                     <span className="font-bold text-[#1A2A3A]">{fmt(q.project_value_cop)}</span>
-                    <span className="text-slate-400">Â·</span>
+                    <span className="text-slate-400">·</span>
                     <span className="text-slate-500">{q.kwp} kWp</span>
-                    <span className="text-slate-400">Â·</span>
+                    <span className="text-slate-400">·</span>
                     <span className="text-slate-500 text-xs">{SYSTEM_LABELS[q.system_type ?? "onGrid"] ?? "OnGrid"}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Link href={`/installer/quotes/${q.id}`}
                       className="flex-1 text-center bg-[#1A2A3A] text-white text-xs px-3 py-2 rounded-lg hover:bg-[#243447] transition font-semibold">
-                      Ver propuesta â
+                      Ver propuesta →
                     </Link>
                     <NotePopover quoteId={q.id} note={q.nota_seguimiento} onSaved={handleNoteChange} />
                   </div>
