@@ -4,13 +4,13 @@ import { useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const STATUS_OPTIONS = [
-  { key: "borrador",       label: "ð Borrador"           },
-  { key: "enviada",        label: "ð¤ Enviada al cliente"  },
-  { key: "en_negociacion", label: "ð¤ En negociaciÃ³n"     },
-  { key: "aceptada",       label: "â Aceptada"            },
-  { key: "negativa",       label: "â Negativa"            },
-  { key: "instalacion",    label: "ð§ En instalaciÃ³n"      },
-  { key: "cerrada",        label: "ð Cerrada"             },
+  { key: "borrador",       label: "📝 Borrador"           },
+  { key: "enviada",        label: "📤 Enviada al cliente"  },
+  { key: "en_negociacion", label: "🤝 En negociación"     },
+  { key: "aceptada",       label: "✅ Aceptada"            },
+  { key: "negativa",       label: "❌ Negativa"            },
+  { key: "instalacion",    label: "🔧 En instalación"      },
+  { key: "cerrada",        label: "🏁 Cerrada"             },
 ];
 
 const STATUS_STYLE: Record<string, string> = {
@@ -69,7 +69,7 @@ const IVA_EXEMPT = ["panel", "estructura"];
 const SYSTEM_LABELS: Record<string, string> = {
   onGrid: "OnGrid",
   offGrid: "OffGrid",
-  hybrid: "HÃ­brido",
+  hybrid: "Híbrido",
 };
 
 export default function QuoteViewPage() {
@@ -104,7 +104,7 @@ export default function QuoteViewPage() {
       .single();
 
     if (qErr || !quoteData) {
-      setError("CotizaciÃ³n no encontrada");
+      setError("Cotización no encontrada");
       setLoading(false);
       return;
     }
@@ -154,7 +154,7 @@ export default function QuoteViewPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-slate-400 text-sm">Cargando propuestaâ¦</div>
+        <div className="text-slate-400 text-sm">Cargando propuesta…</div>
       </div>
     );
   }
@@ -166,7 +166,7 @@ export default function QuoteViewPage() {
     );
   }
 
-  // ââ Helpers ââââââââââââââââââââââââââââââââââââââââââââââââââ
+  // ── Helpers ──────────────────────────────────────────────────
   async function handleStatusChange(newStatus: string) {
     if (!quote) return;
     setSavingStatus(true);
@@ -186,7 +186,7 @@ export default function QuoteViewPage() {
     setSavingCosto(false);
   }
 
-  // ââ Calculations âââââââââââââââââââââââââââââââââââââââââââââ
+  // ── Calculations ─────────────────────────────────────────────
   const kwp = quote.kwp;
   const kwhYear = Math.round(kwp * 1440);
   const co2Tons = parseFloat((kwhYear * 0.00028).toFixed(1));
@@ -206,9 +206,9 @@ export default function QuoteViewPage() {
   const monthlySavings = Math.round((coverage / 100) * monthlyBill);
   const annualSavings = monthlySavings * 12;
   const simplePayback =
-    annualSavings > 0 ? (total / annualSavings).toFixed(1) : "â";
+    annualSavings > 0 ? (total / annualSavings).toFixed(1) : "—";
   const paybackLey =
-    annualSavings > 0 ? ((total * 0.5) / annualSavings).toFixed(1) : "â";
+    annualSavings > 0 ? ((total * 0.5) / annualSavings).toFixed(1) : "—";
 
   const quoteDate = new Date(quote.created_at).toLocaleDateString("es-CO", {
     day: "numeric",
@@ -238,7 +238,7 @@ export default function QuoteViewPage() {
           onClick={() => window.history.back()}
           className="text-slate-500 hover:text-slate-700 text-sm transition"
         >
-          â Volver
+          ← Volver
         </button>
         <div className="flex-1" />
         {/* Status selector */}
@@ -256,14 +256,14 @@ export default function QuoteViewPage() {
           onClick={() => window.print()}
           className="bg-[#1A2A3A] text-white font-semibold px-5 py-2 rounded-lg hover:bg-[#243447] transition text-sm flex items-center gap-2"
         >
-          ð¨ï¸ Descargar PDF
+          🖨️ Descargar PDF
         </button>
       </div>
 
       {/* Commission panel */}
       <div className="no-print bg-white rounded-xl shadow-sm p-5 mb-6 border-l-4 border-[#FFC107]">
         <h3 className="font-bold text-[#1A2A3A] text-sm mb-4 uppercase tracking-wide">
-          ð° AnÃ¡lisis de comisiÃ³n (interno)
+          💰 Análisis de comisión (interno)
         </h3>
         <div className="grid grid-cols-4 gap-4 items-end">
           {/* Costo del proyecto */}
@@ -284,7 +284,7 @@ export default function QuoteViewPage() {
                 disabled={savingCosto}
                 className="bg-[#1A2A3A] text-white text-xs font-semibold px-3 py-2 rounded-lg hover:bg-[#243447] transition disabled:opacity-60 whitespace-nowrap"
               >
-                {savingCosto ? "â¦" : "Guardar"}
+                {savingCosto ? "…" : "Guardar"}
               </button>
             </div>
             <p className="text-xs text-slate-400 mt-1">Solo visible para vos, no aparece en la propuesta</p>
@@ -308,7 +308,7 @@ export default function QuoteViewPage() {
             {(() => {
               const costo = parseInt(costoInput.replace(/\D/g, "")) || quote.costo_proyecto_cop;
               const margen = total - costo;
-              const pct = costo > 0 ? ((margen / total) * 100).toFixed(0) : "â";
+              const pct = costo > 0 ? ((margen / total) * 100).toFixed(0) : "—";
               return (
                 <>
                   <p className={`font-black text-xl ${margen > 0 ? "text-green-600" : "text-red-500"}`}>
@@ -320,10 +320,10 @@ export default function QuoteViewPage() {
             })()}
           </div>
 
-          {/* ComisiÃ³n */}
+          {/* Comisión */}
           <div className="bg-[#1A2A3A] rounded-xl p-3 text-center">
             <p className="text-xs text-slate-400 mb-1">
-              Tu comisiÃ³n ({quote.broker_commission_rate}%)
+              Tu comisión ({quote.broker_commission_rate}%)
             </p>
             {(() => {
               const costo = parseInt(costoInput.replace(/\D/g, "")) || quote.costo_proyecto_cop;
@@ -340,7 +340,7 @@ export default function QuoteViewPage() {
         </div>
       </div>
 
-      {/* ââ QUOTE DOCUMENT ââââââââââââââââââââââââââââââââââââââââ */}
+      {/* ── QUOTE DOCUMENT ──────────────────────────────────────── */}
       <div
         id="quote-doc"
         className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-4xl mx-auto"
@@ -350,15 +350,15 @@ export default function QuoteViewPage() {
         <div className="bg-[#1A2A3A] px-8 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-[#FFC107] rounded-full flex items-center justify-center text-xl font-bold text-[#1A2A3A]">
-              â
+              ☀
             </div>
             <div>
               <p className="text-white font-black text-lg tracking-wide leading-none">SOLARWIN SAS</p>
-              <p className="text-slate-400 text-xs mt-0.5">EnergÃ­as Solares</p>
+              <p className="text-slate-400 text-xs mt-0.5">Energías Solares</p>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-slate-400 text-xs uppercase tracking-wide">Propuesta tÃ©cnica</p>
+            <p className="text-slate-400 text-xs uppercase tracking-wide">Propuesta técnica</p>
             <p className="text-white font-semibold text-sm mt-0.5">{quoteDate}</p>
           </div>
         </div>
@@ -394,12 +394,12 @@ export default function QuoteViewPage() {
                 {quote.client_name}
               </h1>
               <p className="text-slate-400 text-sm mt-2">
-                ð {quote.city}
-                {quote.property_address ? ` Â· ${quote.property_address}` : ""}
+                📍 {quote.city}
+                {quote.property_address ? ` · ${quote.property_address}` : ""}
               </p>
             </div>
             <div className="bg-[#FFC107] text-[#1A2A3A] font-black px-4 py-2 rounded-lg text-sm shrink-0">
-              Sistema {systemLabel} Â· {kwp.toFixed(2)} kWp
+              Sistema {systemLabel} · {kwp.toFixed(2)} kWp
             </div>
           </div>
         </div>
@@ -408,10 +408,10 @@ export default function QuoteViewPage() {
         <div className="bg-[#FFC107] px-8 py-5 grid grid-cols-4 gap-4">
           {(
             [
-              ["âï¸", kwp.toFixed(2), "kWp instalados"],
-              ["â¡", kwhYear.toLocaleString("es-CO"), "kWh/aÃ±o generados"],
-              ["ð±", co2Tons.toFixed(1), "ton COâ/aÃ±o evitadas"],
-              ["ð³", equivTrees.toLocaleString("es-CO"), "Ã¡rboles equivalentes"],
+              ["☀️", kwp.toFixed(2), "kWp instalados"],
+              ["⚡", kwhYear.toLocaleString("es-CO"), "kWh/año generados"],
+              ["🌱", co2Tons.toFixed(1), "ton CO₂/año evitadas"],
+              ["🌳", equivTrees.toLocaleString("es-CO"), "árboles equivalentes"],
             ] as [string, string, string][]
           ).map(([icon, val, label]) => (
             <div key={label} className="text-center">
@@ -427,16 +427,16 @@ export default function QuoteViewPage() {
           {/* Client card */}
           <div className="bg-slate-50 rounded-xl p-4">
             <h3 className="font-black text-[#1A2A3A] text-xs uppercase tracking-wide mb-3">
-              InformaciÃ³n del proyecto
+              Información del proyecto
             </h3>
             {(
               [
                 ["Cliente", quote.client_name],
                 ["Ciudad", quote.city],
                 ...(quote.client_email ? [["Email", quote.client_email]] : []),
-                ...(quote.client_phone ? [["TelÃ©fono", quote.client_phone]] : []),
+                ...(quote.client_phone ? [["Teléfono", quote.client_phone]] : []),
                 ["Fecha", quoteDate],
-                ["Validez", "15 dÃ­as"],
+                ["Validez", "15 días"],
                 ["Tipo sistema", systemLabel],
                 ...(quote.monthly_consumption_kwh
                   ? [
@@ -458,31 +458,31 @@ export default function QuoteViewPage() {
           {/* Description */}
           <div className="col-span-2">
             <h3 className="font-black text-[#1A2A3A] text-xs uppercase tracking-wide mb-3">
-              La soluciÃ³n propuesta
+              La solución propuesta
             </h3>
             <p className="text-slate-600 text-sm leading-relaxed mb-4">
               Solarwin presenta esta propuesta de sistema fotovoltaico{" "}
               <strong>{systemLabel}</strong> de{" "}
-              <strong>{kwp.toFixed(2)} kWp</strong> diseÃ±ada para las necesidades
-              energÃ©ticas de <strong>{quote.client_name}</strong> en{" "}
-              <strong>{quote.city}</strong>. El sistema generarÃ¡ aproximadamente{" "}
-              <strong>{kwhYear.toLocaleString("es-CO")} kWh al aÃ±o</strong>,
-              contribuyendo a la reducciÃ³n de emisiones de COâ y al ahorro en la
-              factura energÃ©tica.
+              <strong>{kwp.toFixed(2)} kWp</strong> diseñada para las necesidades
+              energéticas de <strong>{quote.client_name}</strong> en{" "}
+              <strong>{quote.city}</strong>. El sistema generará aproximadamente{" "}
+              <strong>{kwhYear.toLocaleString("es-CO")} kWh al año</strong>,
+              contribuyendo a la reducción de emisiones de CO₂ y al ahorro en la
+              factura energética.
             </p>
             <div className="grid grid-cols-2 gap-3">
               {(
                 [
-                  ["ð", "TecnologÃ­a Tier 1", "Paneles de primera calidad con mÃ¡xima eficiencia"],
+                  ["🔆", "Tecnología Tier 1", "Paneles de primera calidad con máxima eficiencia"],
                   [
-                    "ð",
+                    "📊",
                     "Monitoreo 24/7",
                     "Control en tiempo real desde celular o computadora",
                   ],
-                  ["ð¡ï¸", "GarantÃ­as premium", "25 aÃ±os paneles Â· 10 aÃ±os inversores"],
+                  ["🛡️", "Garantías premium", "25 años paneles · 10 años inversores"],
                   [
-                    "â¡",
-                    "InstalaciÃ³n certificada",
+                    "⚡",
+                    "Instalación certificada",
                     "Equipo Retie certificado con experiencia comprobada",
                   ],
                 ] as [string, string, string][]
@@ -566,7 +566,7 @@ export default function QuoteViewPage() {
                   </tr>
                   <tr className="bg-slate-50">
                     <td colSpan={4} className="px-4 py-2 text-right text-xs text-slate-400">
-                      IVA (servicios, segÃºn Ley 1715)
+                      IVA (servicios, según Ley 1715)
                     </td>
                     <td className="px-4 py-2 text-right text-sm text-slate-500">
                       {fmt(iva)}
@@ -577,7 +577,7 @@ export default function QuoteViewPage() {
                       colSpan={4}
                       className="px-4 py-3.5 text-right font-black text-[#1A2A3A] text-base"
                     >
-                      TOTAL INVERSIÃN
+                      TOTAL INVERSIÓN
                     </td>
                     <td className="px-4 py-3.5 text-right font-black text-[#1A2A3A] text-xl">
                       {fmt(total)}
@@ -599,7 +599,7 @@ export default function QuoteViewPage() {
             <div className="border-2 border-[#FFC107] rounded-xl p-5 bg-yellow-50">
               <div className="flex items-center gap-2 mb-3">
                 <span className="bg-[#FFC107] text-[#1A2A3A] font-black text-xs px-2.5 py-0.5 rounded-full">
-                  OPCIÃN 1
+                  OPCIÓN 1
                 </span>
                 <span className="font-bold text-[#1A2A3A]">Contado</span>
               </div>
@@ -607,7 +607,7 @@ export default function QuoteViewPage() {
                 {fmtM(total * 0.95)}
               </p>
               <p className="text-sm text-green-600 font-semibold mb-3">
-                ð 5% descuento por pago de contado
+                🎁 5% descuento por pago de contado
               </p>
               <div className="space-y-1.5 text-sm border-t border-yellow-200 pt-3">
                 <div className="flex justify-between">
@@ -629,9 +629,9 @@ export default function QuoteViewPage() {
             <div className="border border-slate-200 rounded-xl p-5 bg-slate-50">
               <div className="flex items-center gap-2 mb-3">
                 <span className="bg-slate-200 text-slate-600 font-black text-xs px-2.5 py-0.5 rounded-full">
-                  OPCIÃN 2
+                  OPCIÓN 2
                 </span>
-                <span className="font-bold text-[#1A2A3A]">Leasing / CrÃ©dito</span>
+                <span className="font-bold text-[#1A2A3A]">Leasing / Crédito</span>
               </div>
               <p className="text-4xl font-black text-[#1A2A3A] mb-0.5">
                 {fmt(Math.round(total / 60))}
@@ -658,13 +658,13 @@ export default function QuoteViewPage() {
         {quote.monthly_consumption_kwh > 0 && (
           <div className="px-8 pb-7">
             <h3 className="font-black text-[#1A2A3A] text-xs uppercase tracking-wide mb-3">
-              AnÃ¡lisis de retorno de inversiÃ³n
+              Análisis de retorno de inversión
             </h3>
             <div className="grid grid-cols-2 gap-4">
               {/* Energy table */}
               <div className="bg-slate-50 rounded-xl p-4">
                 <h4 className="font-semibold text-xs text-slate-500 uppercase tracking-wide mb-3">
-                  AnÃ¡lisis energÃ©tico
+                  Análisis energético
                 </h4>
                 {(
                   [
@@ -673,7 +673,7 @@ export default function QuoteViewPage() {
                       `${quote.monthly_consumption_kwh.toLocaleString("es-CO")} kWh`,
                     ],
                     [
-                      "GeneraciÃ³n mensual estimada",
+                      "Generación mensual estimada",
                       `${Math.round(monthlyGen).toLocaleString("es-CO")} kWh`,
                     ],
                     ["Cobertura del sistema", `${coverage.toFixed(0)}%`],
@@ -699,24 +699,24 @@ export default function QuoteViewPage() {
               {/* Payback cards */}
               <div className="space-y-3">
                 <div className="bg-[#1A2A3A] rounded-xl p-4 text-white">
-                  <p className="text-xs text-slate-400 mb-1">Retorno de inversiÃ³n simple</p>
+                  <p className="text-xs text-slate-400 mb-1">Retorno de inversión simple</p>
                   <p className="text-4xl font-black text-[#FFC107]">
                     {simplePayback}
-                    <span className="text-base font-normal text-slate-400 ml-1">aÃ±os</span>
+                    <span className="text-base font-normal text-slate-400 ml-1">años</span>
                   </p>
                 </div>
                 <div className="bg-green-600 rounded-xl p-4 text-white">
                   <p className="text-xs text-green-200 mb-1">
-                    Con incentivos Ley 1715 (50% deducciÃ³n renta)
+                    Con incentivos Ley 1715 (50% deducción renta)
                   </p>
                   <p className="text-4xl font-black">
                     {paybackLey}
-                    <span className="text-base font-normal text-green-200 ml-1">aÃ±os</span>
+                    <span className="text-base font-normal text-green-200 ml-1">años</span>
                   </p>
                 </div>
                 <div className="bg-blue-50 rounded-xl p-3 text-xs text-blue-700">
-                  <p className="font-bold mb-1">âï¸ Ley 1715 de 2014</p>
-                  <p>DeducciÃ³n del 50% en renta Â· ExclusiÃ³n de IVA en equipos Â· ExenciÃ³n de aranceles de importaciÃ³n</p>
+                  <p className="font-bold mb-1">⚖️ Ley 1715 de 2014</p>
+                  <p>Deducción del 50% en renta · Exclusión de IVA en equipos · Exención de aranceles de importación</p>
                 </div>
               </div>
             </div>
@@ -725,7 +725,7 @@ export default function QuoteViewPage() {
             {annualSavings > 0 && (
               <div className="mt-4 bg-gradient-to-r from-[#1A2A3A] to-[#243447] rounded-xl p-5 text-white">
                 <p className="text-xs text-slate-400 uppercase tracking-wide mb-3">
-                  ProyecciÃ³n a 25 aÃ±os
+                  Proyección a 25 años
                 </p>
                 <div className="grid grid-cols-3 gap-4 text-center">
                   {(
@@ -733,17 +733,17 @@ export default function QuoteViewPage() {
                       [
                         "Ahorro total",
                         fmt(annualSavings * 25),
-                        "En factura elÃ©ctrica",
+                        "En factura eléctrica",
                       ],
                       [
-                        "COâ evitado",
+                        "CO₂ evitado",
                         `${(co2Tons * 25).toFixed(0)} ton`,
                         "Impacto ambiental",
                       ],
                       [
                         "ROI",
                         `${(((annualSavings * 25 - total) / total) * 100).toFixed(0)}%`,
-                        "Retorno sobre inversiÃ³n",
+                        "Retorno sobre inversión",
                       ],
                     ] as [string, string, string][]
                   ).map(([title, val, sub]) => (
@@ -762,14 +762,14 @@ export default function QuoteViewPage() {
         {/* GUARANTEES */}
         <div className="px-8 pb-7">
           <h3 className="font-black text-[#1A2A3A] text-xs uppercase tracking-wide mb-3">
-            GarantÃ­as
+            Garantías
           </h3>
           <div className="grid grid-cols-3 gap-3">
             {(
               [
-                ["ð", "25 aÃ±os", "GarantÃ­a de producciÃ³n en paneles solares (80% potencia mÃ­nima)"],
-                ["â¡", "10 aÃ±os", "GarantÃ­a en inversores y microinversores"],
-                ["ð§", "5 aÃ±os", "GarantÃ­a en instalaciÃ³n, estructura y mano de obra"],
+                ["🔆", "25 años", "Garantía de producción en paneles solares (80% potencia mínima)"],
+                ["⚡", "10 años", "Garantía en inversores y microinversores"],
+                ["🔧", "5 años", "Garantía en instalación, estructura y mano de obra"],
               ] as [string, string, string][]
             ).map(([icon, years, desc]) => (
               <div key={years} className="bg-slate-50 rounded-xl p-4 text-center">
@@ -793,7 +793,7 @@ export default function QuoteViewPage() {
               />
             ) : (
               <div className="w-10 h-10 bg-[#FFC107] rounded-full flex items-center justify-center text-xl font-bold text-[#1A2A3A] shrink-0">
-                â
+                ☀
               </div>
             )}
             <div>
@@ -821,7 +821,7 @@ export default function QuoteViewPage() {
                 <p className="text-slate-300 text-xs">{quote.broker_phone}</p>
               )}
               <p className="text-slate-500 text-xs mt-2">
-                Propuesta vÃ¡lida por 15 dÃ­as Â· {quoteDate}
+                Propuesta válida por 15 días · {quoteDate}
               </p>
             </div>
             {quote.broker_avatar_url ? (
