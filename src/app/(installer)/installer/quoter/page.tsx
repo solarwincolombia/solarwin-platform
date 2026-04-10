@@ -24,15 +24,15 @@ type CartItem = {
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
-  panel: "âï¸ Paneles Solares",
-  inverter: "â¡ Inversores",
-  bateria: "ð BaterÃ­as",
-  estructura: "ð© Estructura",
-  cableado: "ð Cableado",
-  certificacion: "ð CertificaciÃ³n",
-  mano_obra: "ð§ Mano de Obra",
-  transporte: "ð Transporte",
-  otro: "ð¦ Otros",
+  panel: "☀️ Paneles Solares",
+  inverter: "⚡ Inversores",
+  bateria: "🔋 Baterías",
+  estructura: "🔩 Estructura",
+  cableado: "🔌 Cableado",
+  certificacion: "📋 Certificación",
+  mano_obra: "🔧 Mano de Obra",
+  transporte: "🚚 Transporte",
+  otro: "📦 Otros",
 };
 
 const CATEGORY_ORDER = [
@@ -92,7 +92,7 @@ export default function QuoterPage() {
     setLoadingCatalog(false);
   }
 
-  // ââ Computed values ââââââââââââââââââââââââââââââââââââââââââ
+  // ── Computed values ──────────────────────────────────────────
   const kwp = parseFloat(
     cart
       .filter((i) => i.category === "panel" && i.wattage_wp)
@@ -120,7 +120,7 @@ export default function QuoterPage() {
     ? Math.ceil(+consumption.monthlyKwh / ((630 * 1440) / 12 / 1000))
     : 0;
 
-  // ââ Cart helpers âââââââââââââââââââââââââââââââââââââââââââââ
+  // ── Cart helpers ─────────────────────────────────────────────
   function addToCart(item: CatalogItem) {
     const existing = cart.find((c) => c.catalog_item_id === item.id);
     if (existing) {
@@ -206,12 +206,12 @@ export default function QuoterPage() {
       window.location.href = `/installer/quotes/${quote.id}`;
     } catch (err) {
       console.error(err);
-      alert("Error guardando cotizaciÃ³n. Intenta de nuevo.");
+      alert("Error guardando cotización. Intenta de nuevo.");
       setSaving(false);
     }
   }
 
-  // ââ Formatters âââââââââââââââââââââââââââââââââââââââââââââââ
+  // ── Formatters ───────────────────────────────────────────────
   const fmt = (n: number) => `$${Math.round(n).toLocaleString("es-CO")}`;
   const fmtM = (n: number) => `$${(n / 1_000_000).toFixed(1)}M`;
 
@@ -226,7 +226,7 @@ export default function QuoterPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-[#1A2A3A] mb-1">Nueva CotizaciÃ³n</h2>
+      <h2 className="text-2xl font-bold text-[#1A2A3A] mb-1">Nueva Cotización</h2>
       <p className="text-slate-500 text-sm mb-6">Crea una propuesta profesional para tu cliente</p>
 
       {/* Step indicator */}
@@ -242,7 +242,7 @@ export default function QuoterPage() {
                   : "bg-slate-200 text-slate-400"
               }`}
             >
-              {step > i + 1 ? "â" : i + 1}
+              {step > i + 1 ? "✓" : i + 1}
             </div>
             <span
               className={`text-sm ${
@@ -251,23 +251,23 @@ export default function QuoterPage() {
             >
               {s}
             </span>
-            {i < steps.length - 1 && <span className="text-slate-300 mx-2">âº</span>}
+            {i < steps.length - 1 && <span className="text-slate-300 mx-2">›</span>}
           </div>
         ))}
       </div>
 
-      {/* ââ STEP 1: CLIENT âââââââââââââââââââââââââââââââââââââââ */}
+      {/* ── STEP 1: CLIENT ─────────────────────────────────────── */}
       {step === 1 && (
         <div className="bg-white rounded-xl p-8 shadow-sm max-w-xl">
           <h3 className="font-semibold text-[#1A2A3A] mb-5">Datos del cliente</h3>
           <div className="space-y-4">
             {(
               [
-                ["Nombre / RazÃ³n Social *", "clientName", "text", "Ecohotel Rosario del Mar"],
-                ["Correo electrÃ³nico", "clientEmail", "email", "contacto@empresa.com"],
-                ["TelÃ©fono", "clientPhone", "tel", "+57 300 000 0000"],
+                ["Nombre / Razón Social *", "clientName", "text", "Ecohotel Rosario del Mar"],
+                ["Correo electrónico", "clientEmail", "email", "contacto@empresa.com"],
+                ["Teléfono", "clientPhone", "tel", "+57 300 000 0000"],
                 ["Ciudad *", "city", "text", "Cartagena"],
-                ["DirecciÃ³n del predio", "propertyAddress", "text", "Cra 1 #23-45"],
+                ["Dirección del predio", "propertyAddress", "text", "Cra 1 #23-45"],
               ] as [string, keyof typeof form, string, string][]
             ).map(([label, key, type, ph]) => (
               <div key={key}>
@@ -287,9 +287,9 @@ export default function QuoterPage() {
               <div className="flex gap-2">
                 {(
                   [
-                    ["onGrid", "âï¸ OnGrid"],
-                    ["offGrid", "ð OffGrid"],
-                    ["hybrid", "â¡ HÃ­brido"],
+                    ["onGrid", "☀️ OnGrid"],
+                    ["offGrid", "🔋 OffGrid"],
+                    ["hybrid", "⚡ Híbrido"],
                   ] as [string, string][]
                 ).map(([val, label]) => (
                   <button
@@ -312,16 +312,16 @@ export default function QuoterPage() {
               disabled={!form.clientName || !form.city}
               className="w-full bg-[#1A2A3A] text-white font-semibold px-6 py-2.5 rounded-lg disabled:opacity-40 hover:bg-[#243447] transition"
             >
-              Siguiente â
+              Siguiente →
             </button>
           </div>
         </div>
       )}
 
-      {/* ââ STEP 2: CONSUMPTION ââââââââââââââââââââââââââââââââââ */}
+      {/* ── STEP 2: CONSUMPTION ────────────────────────────────── */}
       {step === 2 && (
         <div className="bg-white rounded-xl p-8 shadow-sm max-w-xl">
-          <h3 className="font-semibold text-[#1A2A3A] mb-5">Consumo elÃ©ctrico</h3>
+          <h3 className="font-semibold text-[#1A2A3A] mb-5">Consumo eléctrico</h3>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
@@ -349,7 +349,7 @@ export default function QuoterPage() {
               />
               {consumption.monthlyKwh && consumption.monthlyBill && +consumption.monthlyKwh > 0 && (
                 <p className="text-xs text-slate-400 mt-1">
-                  Tarifa implÃ­cita:{" "}
+                  Tarifa implícita:{" "}
                   <strong>
                     ${Math.round(+consumption.monthlyBill / +consumption.monthlyKwh).toLocaleString("es-CO")}
                     /kWh
@@ -361,14 +361,14 @@ export default function QuoterPage() {
             {suggestedPanels > 0 && (
               <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 text-sm text-blue-800">
                 <p className="font-semibold mb-1">
-                  ð¡ Para cubrir {(+consumption.monthlyKwh).toLocaleString("es-CO")} kWh/mes:
+                  💡 Para cubrir {(+consumption.monthlyKwh).toLocaleString("es-CO")} kWh/mes:
                 </p>
                 <p>
                   Se necesitan ~<strong>{suggestedPanels} paneles</strong> de 630W (
                   {((suggestedPanels * 630) / 1000).toFixed(1)} kWp)
                 </p>
                 <p className="text-xs text-blue-600 mt-1">
-                  GeneraciÃ³n anual estimada:{" "}
+                  Generación anual estimada:{" "}
                   {Math.round((suggestedPanels * 630 * 1440) / 1000).toLocaleString("es-CO")} kWh
                 </p>
               </div>
@@ -379,43 +379,43 @@ export default function QuoterPage() {
                 onClick={() => setStep(1)}
                 className="bg-slate-100 text-slate-700 px-6 py-2.5 rounded-lg font-semibold hover:bg-slate-200 transition"
               >
-                â AtrÃ¡s
+                ← Atrás
               </button>
               <button
                 onClick={() => setStep(3)}
                 className="flex-1 bg-[#1A2A3A] text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-[#243447] transition"
               >
-                Seleccionar equipos â
+                Seleccionar equipos →
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ââ STEP 3: CATALOG ââââââââââââââââââââââââââââââââââââââ */}
+      {/* ── STEP 3: CATALOG ────────────────────────────────────── */}
       {step === 3 && (
         <div className="flex gap-6 flex-wrap xl:flex-nowrap">
           {/* Left: catalog */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-[#1A2A3A]">CatÃ¡logo de equipos</h3>
+              <h3 className="font-semibold text-[#1A2A3A]">Catálogo de equipos</h3>
               <button
                 onClick={() => setStep(2)}
                 className="text-sm text-slate-400 hover:text-slate-600 transition"
               >
-                â AtrÃ¡s
+                ← Atrás
               </button>
             </div>
 
             {loadingCatalog ? (
               <div className="bg-white rounded-xl p-10 text-center text-slate-400 animate-pulse">
-                Cargando catÃ¡logoâ¦
+                Cargando catálogo…
               </div>
             ) : catalog.length === 0 ? (
               <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-6 text-center">
-                <p className="text-yellow-800 font-semibold">â ï¸ CatÃ¡logo vacÃ­o</p>
+                <p className="text-yellow-800 font-semibold">⚠️ Catálogo vacío</p>
                 <p className="text-yellow-600 text-sm mt-1">
-                  Ejecuta la migraciÃ³n SQL en Supabase para cargar los productos
+                  Ejecuta la migración SQL en Supabase para cargar los productos
                 </p>
               </div>
             ) : (
@@ -450,7 +450,7 @@ export default function QuoterPage() {
                                   onClick={() => updateQty(item.id, inCart.quantity - 1)}
                                   className="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center"
                                 >
-                                  â
+                                  −
                                 </button>
                                 <span className="w-8 text-center text-sm font-bold text-[#1A2A3A]">
                                   {inCart.quantity}
@@ -484,17 +484,17 @@ export default function QuoterPage() {
           <div className="w-full xl:w-80 shrink-0">
             <div className="bg-white rounded-xl shadow-sm sticky top-4 overflow-hidden">
               <div className="bg-[#1A2A3A] px-4 py-3">
-                <h3 className="font-semibold text-white text-sm">ð CotizaciÃ³n actual</h3>
+                <h3 className="font-semibold text-white text-sm">🛒 Cotización actual</h3>
                 {kwp > 0 && (
                   <p className="text-[#FFC107] text-xs mt-0.5">
-                    {kwp} kWp Â· {numPanels} paneles
+                    {kwp} kWp · {numPanels} paneles
                   </p>
                 )}
               </div>
 
               {cart.length === 0 ? (
                 <div className="p-8 text-center text-slate-400 text-sm">
-                  Agrega equipos del catÃ¡logo
+                  Agrega equipos del catálogo
                 </div>
               ) : (
                 <>
@@ -509,7 +509,7 @@ export default function QuoterPage() {
                             {item.name}
                           </p>
                           <p className="text-xs text-slate-400 mt-0.5">
-                            {fmt(item.unit_price_cop)} Ã {item.quantity}
+                            {fmt(item.unit_price_cop)} × {item.quantity}
                           </p>
                         </div>
                         <div className="text-right shrink-0">
@@ -520,7 +520,7 @@ export default function QuoterPage() {
                             onClick={() => updateQty(item.id, 0)}
                             className="text-red-400 hover:text-red-600 text-xs mt-0.5 transition"
                           >
-                            â
+                            ✕
                           </button>
                         </div>
                       </div>
@@ -547,7 +547,7 @@ export default function QuoterPage() {
                       onClick={() => setStep(4)}
                       className="w-full bg-[#FFC107] hover:bg-yellow-400 text-[#1A2A3A] font-bold py-2.5 rounded-lg transition text-sm"
                     >
-                      Ver resumen â
+                      Ver resumen →
                     </button>
                   </div>
                 </>
@@ -557,12 +557,12 @@ export default function QuoterPage() {
         </div>
       )}
 
-      {/* ââ STEP 4: SUMMARY ââââââââââââââââââââââââââââââââââââââ */}
+      {/* ── STEP 4: SUMMARY ────────────────────────────────────── */}
       {step === 4 && (
         <div className="max-w-2xl">
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <div className="text-center mb-6">
-              <div className="text-4xl mb-2">ð</div>
+              <div className="text-4xl mb-2">🎉</div>
               <h3 className="font-bold text-[#1A2A3A] text-xl">Propuesta lista</h3>
               <p className="text-slate-500 text-sm">Revisa y guarda para ver la propuesta profesional</p>
             </div>
@@ -574,8 +574,8 @@ export default function QuoterPage() {
                   ["Cliente", form.clientName],
                   ["Ciudad", form.city],
                   ...(form.clientEmail ? [["Email", form.clientEmail]] : []),
-                  ...(form.clientPhone ? [["TelÃ©fono", form.clientPhone]] : []),
-                  ["Sistema", form.systemType === "onGrid" ? "âï¸ OnGrid" : form.systemType === "offGrid" ? "ð OffGrid" : "â¡ HÃ­brido"],
+                  ...(form.clientPhone ? [["Teléfono", form.clientPhone]] : []),
+                  ["Sistema", form.systemType === "onGrid" ? "☀️ OnGrid" : form.systemType === "offGrid" ? "🔋 OffGrid" : "⚡ Híbrido"],
                   ...(consumption.monthlyKwh ? [["Consumo mensual", `${(+consumption.monthlyKwh).toLocaleString("es-CO")} kWh`]] : []),
                   ...(consumption.monthlyBill ? [["Factura mensual", fmt(+consumption.monthlyBill)]] : []),
                 ] as [string, string][]
@@ -645,8 +645,8 @@ export default function QuoterPage() {
                 {(
                   [
                     ["Potencia", `${kwp} kWp`],
-                    ["GeneraciÃ³n anual", `${Math.round(kwp * 1440).toLocaleString("es-CO")} kWh`],
-                    ["Tu comisiÃ³n mes 1", fmtM(commission1)],
+                    ["Generación anual", `${Math.round(kwp * 1440).toLocaleString("es-CO")} kWh`],
+                    ["Tu comisión mes 1", fmtM(commission1)],
                   ] as [string, string][]
                 ).map(([l, v]) => (
                   <div key={l}>
@@ -662,14 +662,14 @@ export default function QuoterPage() {
                 onClick={() => setStep(3)}
                 className="bg-slate-100 text-slate-700 px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-slate-200 transition"
               >
-                â Editar equipos
+                ← Editar equipos
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving || cart.length === 0}
                 className="flex-1 bg-[#FFC107] hover:bg-yellow-400 text-[#1A2A3A] font-bold py-2.5 rounded-lg transition disabled:opacity-50 text-sm"
               >
-                {saving ? "Guardandoâ¦" : "ð¾ Guardar y ver propuesta"}
+                {saving ? "Guardando…" : "💾 Guardar y ver propuesta"}
               </button>
             </div>
           </div>
