@@ -10,6 +10,7 @@ type CatalogItem = {
   public_price_cop: number;
   category: string;
   wattage_wp: number | null;
+  system_type: string | null;
 };
 
 type CartItem = {
@@ -141,6 +142,7 @@ export default function QuoterPage() {
           quantity: 1,
           unit_price_cop: item.public_price_cop,
           wattage_wp: item.wattage_wp,
+            system_type: item.system_type || null,
         },
       ]);
     }
@@ -220,7 +222,10 @@ export default function QuoterPage() {
   // Group catalog by category for display
   const catalogByCategory: Record<string, CatalogItem[]> = {};
   for (const cat of CATEGORY_ORDER) {
-    const items = catalog.filter((i) => i.category === cat);
+    let items = catalog.filter((i) => i.category === cat);
+      if (cat === "inverter") {
+        items = items.filter((i) => !i.system_type || i.system_type === form.systemType);
+      }
     if (items.length > 0) catalogByCategory[cat] = items;
   }
 
