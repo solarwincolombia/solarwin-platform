@@ -89,6 +89,7 @@ export default function QuoterPage() {
         public_price_cop: item.public_price_cop,
         category: item.category || "otro",
         wattage_wp: item.wattage_wp || null,
+        system_type: item.system_type || null,
       }))
     );
     setLoadingCatalog(false);
@@ -492,7 +493,7 @@ export default function QuoterPage() {
                                   </button>
                                 )}
                               </div>
-                            ) : {inCart ? (
+                            ) : inCart ? (
                               <div className="flex items-center gap-1 shrink-0">
                                 <button
                                   onClick={() => updateQty(item.id, inCart.quantity - 1)}
@@ -520,7 +521,7 @@ export default function QuoterPage() {
                               >
                                 + Agregar
                               </button>
-                            )}}
+                            )}
                           </div>
                         );
                       })}
