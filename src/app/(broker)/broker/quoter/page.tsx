@@ -65,6 +65,7 @@ export default function QuoterPage() {
   });
 
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [fletePrice, setFletePrice] = useState("");
 
   useEffect(() => {
     if (step === 3) loadCatalog();
@@ -156,6 +157,10 @@ export default function QuoterPage() {
     }
   }
 
+  function updatePrice(cartId: string, price: number) {
+    setCart(cart.map((c) => (c.id === cartId ? { ...c, unit_price_cop: price } : c)));
+  }
+
   async function handleSave() {
     setSaving(true);
     try {
@@ -223,7 +228,7 @@ export default function QuoterPage() {
   const catalogByCategory: Record<string, CatalogItem[]> = {};
   for (const cat of CATEGORY_ORDER) {
     let items = catalog.filter((i) => i.category === cat);
-      if (cat === "inverter") {
+      if (cat === "inverter" || cat === "mano_obra") {
         items = items.filter((i) => !i.system_type || i.system_type === form.systemType);
       }
     if (items.length > 0) catalogByCategory[cat] = items;
@@ -443,13 +448,51 @@ export default function QuoterPage() {
                               </p>
                               <p className="text-xs text-slate-400 truncate mt-0.5">{item.spec}</p>
                             </div>
+                            {item.category !== "transporte" && (
                             <div className="text-right shrink-0 mr-2">
                               <p className="text-sm font-bold text-[#1A2A3A]">
                                 {fmt(item.public_price_cop)}
                               </p>
                               <p className="text-xs text-slate-400">/{item.unit}</p>
                             </div>
-                            {inCart ? (
+                            )}
+                            {item.category === "transporte" ? (
+                              <div className="flex items-center gap-1 shrink-0">
+                                <input
+                                  type="number"
+                                  placeholder="Valor COP"
+                                  value={inCart ? inCart.unit_price_cop || "" : fletePrice}
+                                  onChange={(e) => {
+                                    const val = parseInt(e.target.value) || 0;
+                                    if (inCart) {
+                                      updatePrice(item.id, val);
+                                    } else {
+                                      setFletePrice(e.target.value);
+                                    }
+                                  }}
+                                  className="w-28 text-sm border border-slate-200 rounded px-2 py-1.5 text-right"
+                                />
+                                {inCart ? (
+                                  <button
+                                    onClick={() => updateQty(item.id, 0)}
+                                    className="text-red-400 hover:text-red-600 text-sm font-bold px-2"
+                                  >
+                                    ✕
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={() => {
+                                      const price = parseInt(fletePrice) || 0;
+                                      setCart([...cart, { id: item.id, catalog_item_id: item.id, name: item.name, description: item.spec, category: item.category, quantity: 1, unit_price_cop: price, wattage_wp: null }]);
+                                      setFletePrice("");
+                                    }}
+                                    className="shrink-0 bg-[#1A2A3A] hover:bg-[#243447] text-white text-xs px-3 py-1.5 rounded-lg transition font-semibold"
+                                  >
+                                    + Agregar
+                                  </button>
+                                )}
+                              </div>
+                            ) : {inCart ? (
                               <div className="flex items-center gap-1 shrink-0">
                                 <button
                                   onClick={() => updateQty(item.id, inCart.quantity - 1)}
@@ -457,9 +500,12 @@ export default function QuoterPage() {
                                 >
                                   −
                                 </button>
-                                <span className="w-8 text-center text-sm font-bold text-[#1A2A3A]">
-                                  {inCart.quantity}
-                                </span>
+                                <input
+                                  type="number"
+                                  value={inCart.quantity}
+                                  onChange={(e) => updateQty(item.id, parseInt(e.target.value) || 0)}
+                                  className="w-14 text-center text-sm font-bold text-[#1A2A3A] border border-slate-200 rounded"
+                                />
                                 <button
                                   onClick={() => updateQty(item.id, inCart.quantity + 1)}
                                   className="w-7 h-7 rounded-lg bg-[#FFC107] hover:bg-yellow-400 text-[#1A2A3A] font-bold flex items-center justify-center"
@@ -474,7 +520,7 @@ export default function QuoterPage() {
                               >
                                 + Agregar
                               </button>
-                            )}
+                            )}}
                           </div>
                         );
                       })}
