@@ -323,19 +323,17 @@ export default function QuoteViewPage() {
           {/* Comisión */}
           <div className="bg-[#1A2A3A] rounded-xl p-3 text-center">
             <p className="text-xs text-slate-400 mb-1">
-              Tu comisión ({quote.broker_commission_rate}%)
+              Tu comisión (4% sobre FC antes de IVA)
             </p>
             {(() => {
-              const costo = parseInt(costoInput.replace(/\D/g, "")) || quote.costo_proyecto_cop;
-              const margen = total - costo;
-              const comision = margen > 0 ? margen * (quote.broker_commission_rate / 100) : 0;
+              const comision = Math.round(subtotal * 0.04);
               return (
                 <p className="font-black text-[#FFC107] text-2xl">
                   ${Math.round(comision / 1_000_000).toLocaleString("es-CO")}M
                 </p>
               );
             })()}
-            <p className="text-xs text-slate-500 mt-0.5">sobre la utilidad</p>
+            <p className="text-xs text-slate-500 mt-0.5">4% sobre el subtotal</p>
           </div>
         </div>
       </div>
