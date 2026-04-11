@@ -6,6 +6,7 @@ import BottomNav from "@/components/ui/BottomNav";
 
 const NAV_ITEMS = [
   { href: "/installer/dashboard", icon: "🏠", label: "Inicio" },
+  { href: "/installer/monitoring", icon: "📡", label: "Monitoreo" },
   { href: "/installer/projects", icon: "🔧", label: "Mis Proyectos" },
   { href: "/installer/quotes", icon: "📋", label: "Mis Cotizaciones" },
   { href: "/installer/quoter", icon: "⚡", label: "Nueva Cotización" },
