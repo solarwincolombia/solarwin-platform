@@ -449,7 +449,7 @@ export default function QuoterPage() {
                               </p>
                               <p className="text-xs text-slate-400 truncate mt-0.5">{item.spec}</p>
                             </div>
-                            {item.category !== "transporte" && (
+                            {item.public_price_cop !== 0 && (
                             <div className="text-right shrink-0 mr-2">
                               <p className="text-sm font-bold text-[#1A2A3A]">
                                 {fmt(item.public_price_cop)}
@@ -457,7 +457,7 @@ export default function QuoterPage() {
                               <p className="text-xs text-slate-400">/{item.unit}</p>
                             </div>
                             )}
-                            {item.category === "transporte" ? (
+                            {item.public_price_cop === 0 ? (
                               <div className="flex items-center gap-1 shrink-0">
                                 <input
                                   type="number"
