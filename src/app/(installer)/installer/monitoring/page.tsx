@@ -1,13 +1,13 @@
 "use client";
 import { useState, useEffect, useCallback, useMemo } from "react";
 
-/* ââ Types ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* -- Types -------------------------------------------------------- */
 interface StationLive {
   id: string;
   name: string;
-  generationPower: number;   // kW instantÃ¡neo
+  generationPower: number;   // kW instantaneo
   consumptionPower: number;
-  gridPower: number;         // inyecciÃ³n a red
+  gridPower: number;         // inyeccion a red
   purchasePower: number;     // compra de red
   wirePower: number;
   batteryPower: number;
@@ -43,12 +43,12 @@ interface AlertInfo {
   alertTime: string;
 }
 
-/* ââ Constants ââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* -- Constants ---------------------------------------------------- */
 const CO2_KG_PER_KWH = 0.126;      // Colombia grid emission factor
 const COP_PER_KWH_SAVED = 850;     // avg residential tariff COP/kWh
 const TREES_PER_TON_CO2 = 45;      // trees equivalent per ton CO2
 
-/* ââ API helper âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* -- API helper --------------------------------------------------- */
 async function deyeAPI(action: string, params: Record<string, any> = {}) {
   const res = await fetch("/api/monitoring/deye", {
     method: "POST",
@@ -58,7 +58,7 @@ async function deyeAPI(action: string, params: Record<string, any> = {}) {
   return res.json();
 }
 
-/* ââ Utilities ââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* -- Utilities ---------------------------------------------------- */
 function fmtKw(v: number) {
   if (v >= 1000) return (v / 1000).toFixed(1) + " MW";
   return v.toFixed(1) + " kW";
@@ -71,12 +71,12 @@ function fmtCOP(v: number) {
   return "$" + Math.round(v).toLocaleString("es-CO");
 }
 function fmtDate(ts: number | string) {
-  if (!ts) return "â";
+  if (!ts) return "-";
   const d = typeof ts === "number" ? new Date(ts * 1000) : new Date(ts);
   return d.toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric" });
 }
 function fmtTime(ts: string) {
-  if (!ts) return "â";
+  if (!ts) return "-";
   return new Date(ts).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
 }
 function getTimeRanges() {
@@ -94,7 +94,7 @@ function getTimeRanges() {
   };
 }
 
-/* ââ Sub-components âââââââââââââââââââââââââââââââââââââââââââââââ */
+/* -- Sub-components ----------------------------------------------- */
 
 function StateIndicator({ state }: { state: number }) {
   const map: Record<number, { color: string; label: string }> = {
@@ -111,7 +111,7 @@ function StateIndicator({ state }: { state: number }) {
   );
 }
 
-/* ââ KPI Card âââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* -- KPI Card ----------------------------------------------------- */
 function KPICard({ icon, label, value, sub, color = "text-gray-900" }: {
   icon: string; label: string; value: string; sub?: string; color?: string;
 }) {
@@ -127,7 +127,7 @@ function KPICard({ icon, label, value, sub, color = "text-gray-900" }: {
   );
 }
 
-/* ââ Bar Chart (pure CSS, no deps) ââââââââââââââââââââââââââââââââ */
+/* -- Bar Chart (pure CSS, no deps) -------------------------------- */
 function SimpleBarChart({ data, labelKey, bars, height = 200 }: {
   data: any[];
   labelKey: string;
@@ -171,7 +171,7 @@ function SimpleBarChart({ data, labelKey, bars, height = 200 }: {
   );
 }
 
-/* ââ Setup Form âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* -- Setup Form --------------------------------------------------- */
 function SetupForm({ onDone }: { onDone: () => void }) {
   const [form, setForm] = useState({ appId: "", appSecret: "", email: "", password: "" });
   const [saving, setSaving] = useState(false);
@@ -205,7 +205,7 @@ function SetupForm({ onDone }: { onDone: () => void }) {
       <p className="text-gray-500 text-sm mb-6">Ingresa tus credenciales del portal developer de DeyeCloud.</p>
       {["appId", "appSecret", "email", "password"].map((f) => (
         <div key={f} className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1 capitalize">{f === "appId" ? "App ID" : f === "appSecret" ? "App Secret" : f === "email" ? "Email" : "ContraseÃ±a"}</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1 capitalize">{f === "appId" ? "App ID" : f === "appSecret" ? "App Secret" : f === "email" ? "Email" : "Contrasena"}</label>
           <input
             type={f === "password" ? "password" : "text"}
             value={(form as any)[f]}
@@ -226,20 +226,20 @@ function SetupForm({ onDone }: { onDone: () => void }) {
   );
 }
 
-/* ââ Power Flow Visualization âââââââââââââââââââââââââââââââââââââ */
+/* -- Power Flow Visualization ------------------------------------- */
 function PowerFlowCard({ station }: { station: StationLive }) {
   const flows = [
-    { icon: "âï¸", label: "GeneraciÃ³n", value: station.generationPower, color: "text-yellow-600" },
-    { icon: "ð ", label: "Consumo", value: station.consumptionPower, color: "text-blue-600" },
-    { icon: "ð", label: "InyecciÃ³n Red", value: station.wirePower, color: "text-green-600" },
-    { icon: "â¡", label: "Compra Red", value: station.purchasePower, color: "text-red-600" },
+    { icon: "\u2600\uFE0F", label: "Generacion", value: station.generationPower, color: "text-yellow-600" },
+    { icon: "\uD83C\uDFE0", label: "Consumo", value: station.consumptionPower, color: "text-blue-600" },
+    { icon: "\uD83D\uDD0C", label: "Inyeccion Red", value: station.wirePower, color: "text-green-600" },
+    { icon: "\u26A1", label: "Compra Red", value: station.purchasePower, color: "text-red-600" },
   ];
   if (station.batterySOC > 0) {
-    flows.push({ icon: "ð", label: `BaterÃ­a (${station.batterySOC}%)`, value: station.batteryPower, color: "text-purple-600" });
+    flows.push({ icon: "\uD83D\uDD0B", label: `Bateria (${station.batterySOC}%)`, value: station.batteryPower, color: "text-purple-600" });
   }
   return (
     <div className="bg-white rounded-xl shadow-sm border p-5">
-      <h3 className="font-semibold text-gray-700 mb-4">Flujo de EnergÃ­a en Tiempo Real</h3>
+      <h3 className="font-semibold text-gray-700 mb-4">Flujo de Energia en Tiempo Real</h3>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {flows.map((f) => (
           <div key={f.label} className="text-center">
@@ -250,19 +250,19 @@ function PowerFlowCard({ station }: { station: StationLive }) {
         ))}
       </div>
       <div className="text-xs text-gray-400 mt-3 text-right">
-        Ãltima actualizaciÃ³n: {fmtTime(station.lastUpdateTime)}
+        Ultima actualizacion: {fmtTime(station.lastUpdateTime)}
       </div>
     </div>
   );
 }
 
-/* ââ Alerts Panel âââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* -- Alerts Panel ------------------------------------------------- */
 function AlertsPanel({ alerts, loading }: { alerts: AlertInfo[]; loading: boolean }) {
   if (loading) return <div className="bg-white rounded-xl shadow-sm border p-5 animate-pulse h-32" />;
   return (
     <div className="bg-white rounded-xl shadow-sm border p-5">
       <h3 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
-        ð¨ Alertas Activas
+        \uD83D\uDEA8 Alertas Activas
         {alerts.length > 0 && (
           <span className="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-full">{alerts.length}</span>
         )}
@@ -273,10 +273,10 @@ function AlertsPanel({ alerts, loading }: { alerts: AlertInfo[]; loading: boolea
         <div className="space-y-2 max-h-60 overflow-y-auto">
           {alerts.map((a, i) => (
             <div key={i} className="flex items-start gap-2 p-2 bg-red-50 rounded-lg text-sm">
-              <span className="text-red-500 mt-0.5">â ï¸</span>
+              <span className="text-red-500 mt-0.5">\u26A0\uFE0F</span>
               <div>
                 <div className="font-medium text-red-800">{a.alertMessage || a.alertType}</div>
-                <div className="text-xs text-red-500">{a.deviceSn} Â· {fmtTime(a.alertTime)}</div>
+                <div className="text-xs text-red-500">{a.deviceSn} - {fmtTime(a.alertTime)}</div>
               </div>
             </div>
           ))}
@@ -286,9 +286,9 @@ function AlertsPanel({ alerts, loading }: { alerts: AlertInfo[]; loading: boolea
   );
 }
 
-/* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   GLOBAL VIEW â Aggregated across all SolarWin plants
-   ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ==================================================================
+   GLOBAL VIEW - Aggregated across all SolarWin plants
+   ================================================================== */
 function GlobalView({ stations, history, alerts, loading }: {
   stations: StationLive[];
   history: { week: HistoryPoint[]; month: HistoryPoint[]; year: HistoryPoint[] };
@@ -327,7 +327,7 @@ function GlobalView({ stations, history, alerts, loading }: {
   const moneySaved = histTotals.generation * COP_PER_KWH_SAVED;
   const treesEquiv = (co2Saved / 1000) * TREES_PER_TON_CO2;
 
-  const periodLabels = { week: "Esta Semana", month: "Este Mes", year: "Este AÃ±o" };
+  const periodLabels = { week: "Esta Semana", month: "Este Mes", year: "Este Ano" };
 
   const onlineCount = stations.filter((s) => s.generationPower > 0).length;
   const alertCount = alerts.length;
@@ -346,10 +346,10 @@ function GlobalView({ stations, history, alerts, loading }: {
     <div className="space-y-6">
       {/* Real-time KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <KPICard icon="âï¸" label="GeneraciÃ³n Total" value={fmtKw(totals.generation)} sub="Tiempo real" color="text-yellow-600" />
-        <KPICard icon="ð " label="Consumo Total" value={fmtKw(totals.consumption)} sub="Tiempo real" color="text-blue-600" />
-        <KPICard icon="ð" label="InyecciÃ³n a Red" value={fmtKw(totals.gridExport)} sub="Excedente" color="text-green-600" />
-        <KPICard icon="ð¡" label="Plantas Activas" value={`${onlineCount}/${stations.length}`} sub={alertCount > 0 ? `${alertCount} alertas` : "Sin alertas"} color={alertCount > 0 ? "text-orange-600" : "text-green-600"} />
+        <KPICard icon="\u2600\uFE0F" label="Generacion Total" value={fmtKw(totals.generation)} sub="Tiempo real" color="text-yellow-600" />
+        <KPICard icon="\uD83C\uDFE0" label="Consumo Total" value={fmtKw(totals.consumption)} sub="Tiempo real" color="text-blue-600" />
+        <KPICard icon="\uD83D\uDD0C" label="Inyeccion a Red" value={fmtKw(totals.gridExport)} sub="Excedente" color="text-green-600" />
+        <KPICard icon="\uD83D\uDCE1" label="Plantas Activas" value={`${onlineCount}/${stations.length}`} sub={alertCount > 0 ? `${alertCount} alertas` : "Sin alertas"} color={alertCount > 0 ? "text-orange-600" : "text-green-600"} />
       </div>
 
       {/* Capacity & status bar */}
@@ -372,7 +372,7 @@ function GlobalView({ stations, history, alerts, loading }: {
       {/* Period selector + historical KPIs */}
       <div className="bg-white rounded-xl shadow-sm border p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-gray-700">ProducciÃ³n HistÃ³rica</h3>
+          <h3 className="font-semibold text-gray-700">Produccion Historica</h3>
           <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
             {(["week", "month", "year"] as const).map((p) => (
               <button
@@ -387,10 +387,10 @@ function GlobalView({ stations, history, alerts, loading }: {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <KPICard icon="â¡" label={`GeneraciÃ³n ${periodLabels[histPeriod]}`} value={fmtKwh(histTotals.generation)} color="text-yellow-600" />
-          <KPICard icon="ð°" label="Ahorro Estimado" value={fmtCOP(moneySaved)} sub={`@ ${COP_PER_KWH_SAVED} COP/kWh`} color="text-green-600" />
-          <KPICard icon="ð" label="COâ Evitado" value={`${co2Saved.toFixed(0)} kg`} sub={`â ${treesEquiv.toFixed(0)} Ã¡rboles`} color="text-emerald-600" />
-          <KPICard icon="ð" label="EnergÃ­a de Red" value={fmtKwh(histTotals.gridImport)} sub="Comprada" color="text-red-500" />
+          <KPICard icon="\u26A1" label={`Generacion ${periodLabels[histPeriod]}`} value={fmtKwh(histTotals.generation)} color="text-yellow-600" />
+          <KPICard icon="\uD83D\uDCB0" label="Ahorro Estimado" value={fmtCOP(moneySaved)} sub={`@ ${COP_PER_KWH_SAVED} COP/kWh`} color="text-green-600" />
+          <KPICard icon="\uD83C\uDF0D" label="CO2 Evitado" value={`${co2Saved.toFixed(0)} kg`} sub={`~ ${treesEquiv.toFixed(0)} arboles`} color="text-emerald-600" />
+          <KPICard icon="\uD83D\uDD0C" label="Energia de Red" value={fmtKwh(histTotals.gridImport)} sub="Comprada" color="text-red-500" />
         </div>
 
         {/* Bar chart */}
@@ -400,7 +400,7 @@ function GlobalView({ stations, history, alerts, loading }: {
             labelKey="dateStr"
             bars={[
               { key: "generation", color: "#f59e0b", label: "Solar" },
-              { key: "gridImport", color: "#ef4444", label: "Red ElÃ©ctrica" },
+              { key: "gridImport", color: "#ef4444", label: "Red Electrica" },
             ]}
             height={180}
           />
@@ -415,7 +415,7 @@ function GlobalView({ stations, history, alerts, loading }: {
             <thead>
               <tr className="text-left text-gray-500 border-b">
                 <th className="pb-2 font-medium">Planta</th>
-                <th className="pb-2 font-medium">UbicaciÃ³n</th>
+                <th className="pb-2 font-medium">Ubicacion</th>
                 <th className="pb-2 font-medium text-right">Capacidad</th>
                 <th className="pb-2 font-medium text-right">Generando</th>
                 <th className="pb-2 font-medium text-right">Consumo</th>
@@ -426,7 +426,7 @@ function GlobalView({ stations, history, alerts, loading }: {
               {stations.map((s) => (
                 <tr key={s.id} className="border-b last:border-0 hover:bg-gray-50">
                   <td className="py-2.5 font-medium">{s.name}</td>
-                  <td className="py-2.5 text-gray-500 text-xs">{s.locationAddress || "â"}</td>
+                  <td className="py-2.5 text-gray-500 text-xs">{s.locationAddress || "-"}</td>
                   <td className="py-2.5 text-right">{s.installedCapacity} kWp</td>
                   <td className="py-2.5 text-right text-yellow-600 font-medium">{fmtKw(s.generationPower)}</td>
                   <td className="py-2.5 text-right text-blue-600">{fmtKw(s.consumptionPower)}</td>
@@ -449,9 +449,9 @@ function GlobalView({ stations, history, alerts, loading }: {
   );
 }
 
-/* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   PER-PLANT VIEW â Individual station dashboard
-   ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ==================================================================
+   PER-PLANT VIEW - Individual station dashboard
+   ================================================================== */
 function PlantView({ station, history, alerts, devices, loading }: {
   station: StationLive;
   history: { week: HistoryPoint[]; month: HistoryPoint[]; year: HistoryPoint[] };
@@ -474,7 +474,7 @@ function PlantView({ station, history, alerts, devices, loading }: {
 
   const co2Saved = histTotals.generation * CO2_KG_PER_KWH;
   const moneySaved = histTotals.generation * COP_PER_KWH_SAVED;
-  const periodLabels = { week: "Esta Semana", month: "Este Mes", year: "Este AÃ±o" };
+  const periodLabels = { week: "Esta Semana", month: "Este Mes", year: "Este Ano" };
 
   if (loading) {
     return (
@@ -493,20 +493,20 @@ function PlantView({ station, history, alerts, devices, loading }: {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-gray-800">{station.name}</h2>
-            <p className="text-sm text-gray-500">{station.locationAddress || "Sin ubicaciÃ³n"} Â· {station.installedCapacity} kWp Â· Desde {fmtDate(station.createdDate)}</p>
+            <p className="text-sm text-gray-500">{station.locationAddress || "Sin ubicacion"} - {station.installedCapacity} kWp - Desde {fmtDate(station.createdDate)}</p>
           </div>
           <span className={`px-3 py-1 rounded-full text-sm font-medium ${station.generationPower > 0 ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
-            {station.generationPower > 0 ? "âï¸ Generando" : "ð Inactiva"}
+            {station.generationPower > 0 ? "\u2600\uFE0F Generando" : "\uD83C\uDF19 Inactiva"}
           </span>
         </div>
       </div>
 
       {/* Real-time KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <KPICard icon="âï¸" label="GeneraciÃ³n" value={fmtKw(station.generationPower)} sub="Ahora" color="text-yellow-600" />
-        <KPICard icon="ð " label="Consumo" value={fmtKw(station.consumptionPower)} sub="Ahora" color="text-blue-600" />
-        <KPICard icon="ð" label="InyecciÃ³n Red" value={fmtKw(station.wirePower)} color="text-green-600" />
-        <KPICard icon="â¡" label="Compra Red" value={fmtKw(station.purchasePower)} color="text-red-500" />
+        <KPICard icon="\u2600\uFE0F" label="Generacion" value={fmtKw(station.generationPower)} sub="Ahora" color="text-yellow-600" />
+        <KPICard icon="\uD83C\uDFE0" label="Consumo" value={fmtKw(station.consumptionPower)} sub="Ahora" color="text-blue-600" />
+        <KPICard icon="\uD83D\uDD0C" label="Inyeccion Red" value={fmtKw(station.wirePower)} color="text-green-600" />
+        <KPICard icon="\u26A1" label="Compra Red" value={fmtKw(station.purchasePower)} color="text-red-500" />
       </div>
 
       {/* Power flow */}
@@ -515,7 +515,7 @@ function PlantView({ station, history, alerts, devices, loading }: {
       {/* Historical data */}
       <div className="bg-white rounded-xl shadow-sm border p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-gray-700">ProducciÃ³n HistÃ³rica</h3>
+          <h3 className="font-semibold text-gray-700">Produccion Historica</h3>
           <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
             {(["week", "month", "year"] as const).map((p) => (
               <button
@@ -530,10 +530,10 @@ function PlantView({ station, history, alerts, devices, loading }: {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <KPICard icon="â¡" label="GeneraciÃ³n" value={fmtKwh(histTotals.generation)} color="text-yellow-600" />
-          <KPICard icon="ð°" label="Ahorro" value={fmtCOP(moneySaved)} color="text-green-600" />
-          <KPICard icon="ð" label="COâ Evitado" value={`${co2Saved.toFixed(0)} kg`} color="text-emerald-600" />
-          <KPICard icon="ð" label="Red ElÃ©ctrica" value={fmtKwh(histTotals.gridImport)} color="text-red-500" />
+          <KPICard icon="\u26A1" label="Generacion" value={fmtKwh(histTotals.generation)} color="text-yellow-600" />
+          <KPICard icon="\uD83D\uDCB0" label="Ahorro" value={fmtCOP(moneySaved)} color="text-green-600" />
+          <KPICard icon="\uD83C\uDF0D" label="CO2 Evitado" value={`${co2Saved.toFixed(0)} kg`} color="text-emerald-600" />
+          <KPICard icon="\uD83D\uDD0C" label="Red Electrica" value={fmtKwh(histTotals.gridImport)} color="text-red-500" />
         </div>
 
         {histData.length > 0 && (
@@ -573,9 +573,9 @@ function PlantView({ station, history, alerts, devices, loading }: {
   );
 }
 
-/* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+/* ==================================================================
    MAIN PAGE COMPONENT
-   ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ================================================================== */
 export default function MonitoringPage() {
   const [needsSetup, setNeedsSetup] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -758,12 +758,12 @@ export default function MonitoringPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            {viewMode === "global" ? "âï¸ Monitoreo Global SolarWin" : `ð¡ ${currentStation?.name || "Selecciona una planta"}`}
+            {viewMode === "global" ? "\u2600\uFE0F Monitoreo Global SolarWin" : `\uD83D\uDCE1 ${currentStation?.name || "Selecciona una planta"}`}
           </h1>
           <p className="text-sm text-gray-500 mt-1">
             {viewMode === "global"
-              ? `${stations.length} plantas Â· ${stations.reduce((a, s) => a + s.installedCapacity, 0).toFixed(1)} kWp instalados`
-              : currentStation ? `${currentStation.installedCapacity} kWp Â· ${currentStation.locationAddress}` : ""}
+              ? `${stations.length} plantas - ${stations.reduce((a, s) => a + s.installedCapacity, 0).toFixed(1)} kWp instalados`
+              : currentStation ? `${currentStation.installedCapacity} kWp - ${currentStation.locationAddress}` : ""}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -773,7 +773,7 @@ export default function MonitoringPage() {
               onClick={() => setViewMode("global")}
               className={`px-4 py-2 text-sm rounded-md transition-all ${viewMode === "global" ? "bg-white shadow text-yellow-700 font-medium" : "text-gray-500 hover:text-gray-700"}`}
             >
-              ð Global
+              \uD83C\uDF10 Global
             </button>
             <button
               onClick={() => {
@@ -782,7 +782,7 @@ export default function MonitoringPage() {
               }}
               className={`px-4 py-2 text-sm rounded-md transition-all ${viewMode === "plant" ? "bg-white shadow text-blue-700 font-medium" : "text-gray-500 hover:text-gray-700"}`}
             >
-              ð­ Por Planta
+              \uD83C\uDFED Por Planta
             </button>
           </div>
         </div>
